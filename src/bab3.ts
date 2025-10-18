@@ -3,7 +3,8 @@ import {
     Scene, Engine, FreeCamera, HemisphericLight, MeshBuilder,
     Mesh, Vector3, Color3, Color4, StandardMaterial,
     Texture, CubeTexture, PointLight,
-    ArcRotateCamera, VRDeviceOrientationFreeCamera, VRDeviceOrientationArcRotateCamera
+    DynamicTexture, 
+    ArcRotateCamera
 } from 'babylonjs';
 
 
@@ -71,6 +72,67 @@ var system = {
 };
 
 
+const createGround = function (scene: Scene) {
+    // Create a built-in "ground" shape.
+    //const ground = MeshBuilder.CreateGround('ground1', { width: 6, height: 6, subdivisions: 2 }, scene);
+    // 4a – Create a fairly large checkerboard ground (size 50 × 50 units)
+    const ground = MeshBuilder.CreateGround(
+        'checkerGround',
+        { width: 50, height: 50, subdivisions: 2 },
+        scene
+    );
+
+    // 2) Build a checkerboard texture with 10x10 squares (each square = 1 unit)
+    const squares = 10;
+    const texSize = 1024; // power of 2 for good mipmapping
+    const dt = new DynamicTexture("checkerDT", { width: texSize, height: texSize }, scene, false);
+    // 👇 Cast the context to the DOM type so TypeScript allows text drawing methods
+    const ctx = dt.getContext() as CanvasRenderingContext2D;
+    const cell = texSize / squares;
+
+    // Set text style
+    ctx.textAlign = "center";
+    ctx.textBaseline = "middle";
+    ctx.font = `${Math.floor(cell * 0.4)}px Arial`;
+
+
+
+    for (let row = 0; row < squares; row++) {
+        for (let col = 0; col < squares; col++) {
+            const even = (row + col) % 2 === 0;
+            ctx.fillStyle = even ? "#ffffff" : "#333333";
+            ctx.fillRect(col * cell, row * cell, cell, cell);
+
+            const textColor = even ? "#000000" : "#ffffff";
+            ctx.fillStyle = textColor;            
+
+            // World-relative coordinate labels
+            const labelX = col - squares / 2;
+            const labelZ = squares / 2 - row - 1;
+
+            const centerX = col * cell + cell / 2;
+            const centerY = row * cell + cell / 2;
+
+            ctx.fillText(`x${labelX}`, centerX, centerY - cell * 0.15);
+            ctx.fillText(`z${labelZ}`, centerX, centerY + cell * 0.15);            
+        }
+    }
+    dt.update();
+
+    // Configure texture properties directly on dt
+    dt.wrapU = Texture.CLAMP_ADDRESSMODE;
+    dt.wrapV = Texture.CLAMP_ADDRESSMODE;
+    dt.updateSamplingMode(Texture.NEAREST_SAMPLINGMODE);
+
+
+    // 3) Apply to a simple material and set it on the ground
+    const mat = new StandardMaterial("checkerMat", scene);
+    mat.diffuseTexture = dt;
+    mat.specularColor = new Color3(0, 0, 0);
+    ground.material = mat;
+
+}
+
 /**
  * create a planet from data
  * @param {Object} planetData custom data object holding relevant information to create a planet 
@@ -83,6 +145,32 @@ const createPlanet = function (planetData: any, scene: Scene) {
     planetData.mesh.position.x = planetData.xpos;
 
     // Wrap planetary map texture.
+
+    // --- Create transparent sphere ---
+    const sphereMat = new StandardMaterial("sphereMat", scene);
+    sphereMat.alpha = 0.3; // make it see-through
+    sphereMat.diffuseColor = new Color3(0.6, 0.8, 1);
+    planetData.mesh.material = sphereMat;
+
+    // --- Create a poster (double-sided plane inside) ---
+    // get diameter from planet
+    const diameter = planetData.diameter;
+    console.log('Creating poster for ' + planetData.name + ' with diameter ' + diameter);
+    const poster = MeshBuilder.CreatePlane("poster", { width: diameter * .7, height: diameter * .7, sideOrientation: Mesh.DOUBLESIDE }, scene);
+    poster.parent = planetData.mesh;
+
+    // Slightly offset it forward (inside the sphere)
+    poster.position = new Vector3(0, 0, 0); // stays centered in local space
+
+
+    // --- Apply the PNG texture ---
+    const posterMat = new StandardMaterial("posterMat", scene);
+    posterMat.diffuseTexture = new Texture("img/textures/poster.png", scene);
+    posterMat.diffuseTexture.hasAlpha = true; // if PNG has transparency
+    posterMat.backFaceCulling = false;        // show both front & back
+    poster.material = posterMat;
+
+    /*
 
     var planetMaterial = new StandardMaterial(planetData.name, scene);
 
@@ -110,6 +198,8 @@ const createPlanet = function (planetData: any, scene: Scene) {
 
     planetData.mesh.material = planetMaterial;
 
+    */
+
 };
 
 
@@ -135,6 +225,7 @@ const buildCanvas = (elem: HTMLElement) => {
                 // skip planets that haven't been created yet
                 continue;
             }
+            (planet.mesh as Mesh).position.y = 3;
             if (planet.orbit.angle != 0) {
                 (planet.mesh as Mesh).position.x = planet.orbit.radius * Math.sin(planet.orbit.angle);
                 (planet.mesh as Mesh).position.z = planet.orbit.radius * Math.cos(planet.orbit.angle);
@@ -169,10 +260,6 @@ const createScene = function (engine: Engine, canvas: HTMLCanvasElement): Scene 
     camera.setTarget(Vector3.Zero());
     // Attach the camera to the canvas
     camera.attachControl(canvas, false);
-    // Create a built-in "sphere" shape using the SphereBuilder
-    var sphere = MeshBuilder.CreateSphere('sphere1', { segments: 16, diameter: 2, sideOrientation: Mesh.FRONTSIDE }, scene);
-    // Move the sphere upward 1/2 of its height
-    sphere.position.y = 1;
 
 
     scene.clearColor = new Color4(0, 0, 0, 1);
@@ -216,6 +303,8 @@ const createScene = function (engine: Engine, canvas: HTMLCanvasElement): Scene 
     createPlanet(system.venus, scene);
     // Third Planet.
     createPlanet(system.earth, scene);
+
+    createGround(scene);
 
     return scene;
 }

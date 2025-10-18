@@ -9,7 +9,7 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   </div>
 `;
 
-import buildCanvas from './bab2';
+import buildCanvas from './bab3';
 
 buildCanvas(document.getElementById('renderCanvasContainer')!); 
 
