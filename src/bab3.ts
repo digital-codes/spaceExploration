@@ -1,76 +1,14 @@
 // import * as BABYLON from 'babylonjs';
 import {
-    Scene, Engine, FreeCamera, HemisphericLight, MeshBuilder,
+    Scene, Engine, HemisphericLight, MeshBuilder,
     Mesh, Vector3, Color3, Color4, StandardMaterial,
     Texture, CubeTexture, PointLight,
     DynamicTexture, 
     ArcRotateCamera
 } from 'babylonjs';
 
-
-
-var system = {
-
-    sun: {
-        mesh: null,
-        name: 'sun', emissive: true,
-        map: 'sun.jpg', diameter: 4, xpos: 0,
-        rotation: {
-            speed: 0,
-            angle: 0
-        },
-        orbit: {
-            radius: 0,
-            speed: 0,
-            angle: 0
-        }
-    },
-
-    mercury: {
-        mesh: null, name: 'mercury', emissive: false,
-        map: 'mercury.jpg', diameter: 1, xpos: 4,
-        rotation: {
-            speed: 0.4,
-            angle: 1
-        },
-        orbit: {
-            radius: 4,
-            speed: 0.01,
-            angle: 0.1
-        }
-    },
-
-    venus: {
-        mesh: null, name: 'venus', emmissive: false,
-        map: 'venus.jpg', 'diameter': 1.5, xpos: 7,
-        rotation: {
-            speed: 0.0001,
-            angle: 0.1
-        },
-        orbit: {
-            radius: 7,
-            speed: 0.005,
-            angle: 0.1
-        }
-    },
-
-    earth: {
-        mesh: null, name: 'earth', emissive: false,
-        map: 'earth.jpg', 'diameter': 1.55, xpos: 10,
-        rotation: {
-            speed: 0.1,
-            angle: 0.1
-        },
-        orbit: {
-            radius: 14,
-            speed: 0.002,
-            angle: 0.1
-        }
-
-    }
-
-};
-
+import system from './assets/data/objects.json';
+console.log(system);
 
 const createGround = function (scene: Scene) {
     // Create a built-in "ground" shape.
@@ -143,6 +81,8 @@ const createPlanet = function (planetData: any, scene: Scene) {
     planetData.mesh = MeshBuilder.CreateSphere(planetData.name, { segments: 16, diameter: planetData.diameter }, scene);
 
     planetData.mesh.position.x = planetData.xpos;
+    planetData.mesh.position.y = planetData.ypos;
+    planetData.mesh.position.z = planetData.zpos;
 
     // Wrap planetary map texture.
 
@@ -165,40 +105,11 @@ const createPlanet = function (planetData: any, scene: Scene) {
 
     // --- Apply the PNG texture ---
     const posterMat = new StandardMaterial("posterMat", scene);
-    posterMat.diffuseTexture = new Texture("img/textures/poster.png", scene);
+    posterMat.diffuseTexture = new Texture(planetData.img, scene);
     posterMat.diffuseTexture.hasAlpha = true; // if PNG has transparency
     posterMat.backFaceCulling = false;        // show both front & back
     poster.material = posterMat;
 
-    /*
-
-    var planetMaterial = new StandardMaterial(planetData.name, scene);
-
-    var materialPath = 'img/textures/' + planetData.map;
-
-    //console.log('materialPath:' + materialPath);
-
-    if (planetData.emissive) {
-
-        planetMaterial.emissiveTexture = new Texture(materialPath, scene);
-
-        planetMaterial.diffuseColor = new Color3(0, 0, 0);
-
-        planetMaterial.specularColor = new Color3(0, 0, 0);
-
-    } else {
-
-        planetMaterial.diffuseTexture = new Texture(materialPath, scene);
-
-    }
-
-    // Remove specular highlight.
-
-    planetMaterial.specularColor = new Color3(0, 0, 0); //gets rid of highlight
-
-    planetData.mesh.material = planetMaterial;
-
-    */
 
 };
 
@@ -217,15 +128,14 @@ const buildCanvas = (elem: HTMLElement) => {
     // define the object update function, before the scene renders.
 
     engine.scenes[0].beforeRender = function () {
-
-        for (const key of Object.keys(system) as Array<keyof typeof system>) {
-            const planet = system[key];
+        for (const idx in system) {
+            const planet = system[idx];
             // console.log(planet.name);
             if (!planet.mesh) {
                 // skip planets that haven't been created yet
                 continue;
             }
-            (planet.mesh as Mesh).position.y = 3;
+            // (planet.mesh as Mesh).position.y = 3;
             if (planet.orbit.angle != 0) {
                 (planet.mesh as Mesh).position.x = planet.orbit.radius * Math.sin(planet.orbit.angle);
                 (planet.mesh as Mesh).position.z = planet.orbit.radius * Math.cos(planet.orbit.angle);
@@ -234,7 +144,6 @@ const buildCanvas = (elem: HTMLElement) => {
             //TODO: individual rotations for each Planet in this range.
             (planet.mesh as Mesh).rotate(new Vector3(0, 1, 0), 0.01);
         }
-
     };
 
     // the canvas/window resize event handler
@@ -292,18 +201,15 @@ const createScene = function (engine: Engine, canvas: HTMLCanvasElement): Scene 
     skyboxMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
     skybox.material = skyboxMaterial;
 
-    // Create the Sun.
-    createPlanet(system.sun, scene);
-    var sunLight = new PointLight('sunlight', Vector3.Zero(), scene);
-    sunLight.intensity = 2.2;
-
-    // First Planet.
-    createPlanet(system.mercury, scene);
-    // Second Planet.
-    createPlanet(system.venus, scene);
-    // Third Planet.
-    createPlanet(system.earth, scene);
-
+    // Create the objects
+    system.forEach(object => {
+        createPlanet(object, scene);
+        if (object.name === 'sun') {
+            var sunLight = new PointLight('sunlight', Vector3.Zero(), scene);
+            sunLight.intensity = 2.2;
+        }
+    });
+    // Create the ground
     createGround(scene);
 
     return scene;
