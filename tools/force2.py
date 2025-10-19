@@ -211,7 +211,7 @@ for i, b in enumerate(bodies):
     objects_json.append(obj_entry)
 
 # Write to file
-with open("objects_output.json", "w") as f:
+with open("objects.json", "w") as f:
     json.dump(objects_json, f, indent=4)
 
 
