@@ -1,7 +1,8 @@
 import numpy as np
 from dataclasses import dataclass, field
 import plotly.graph_objects as go
-
+import json 
+import random 
 # ----------------------------
 # Model configuration
 # ----------------------------
@@ -129,7 +130,7 @@ def compute_forces(positions):
     # --- 4) Gravity-like toward y=0 (negative y only) ---
     # f_y = -GLOBAL_GRAVITY_K * a_i
     for b in bodies:
-        F[b.i][1] += -GLOBAL_GRAVITY_K * b.a * positions[b.i][1] if positions[b.i][1] > 0 else 1000.0
+        F[b.i][1] += -GLOBAL_GRAVITY_K * b.a * positions[b.i][1] if positions[b.i][1] > 0 else 100000.0
 
     # --- 5) Buoyancy-like opposite (positive y only) ---
     # f_y += +GLOBAL_GRAVITY_K * b_i
@@ -177,6 +178,43 @@ print("\nAttractors (per object, on x/z plane):")
 for i in range(N):
     A = [{"x":att['x'], "z":att['z'], "w":att['w']} for att in bodies[i].attractors]
     print(f"  Obj {i+1}: {A}")
+
+
+objects_json = []
+
+for i, b in enumerate(bodies):
+    obj_entry = {
+        "mesh": None,
+        "name": f"obj{i+1}",
+        "emissive": False,
+        "map": None,
+        "img": "img/textures/poster.png",
+        "diameter": float(b.d),
+        "xpos": float(pos[i, 0]),
+        "ypos": float(pos[i, 1]),
+        "zpos": float(pos[i, 2]),
+        "parm_a": float(b.a),
+        "parm_b": float(b.b),
+        "parm_c": float(b.c),
+        "rotation": {
+            "speed": random.uniform(0, .1),
+            "angle": random.uniform(0,6.2),
+            "active": True
+        },
+        "orbit": {
+            "radius": random.randint(3,20),
+            "speed": random.uniform(0, .01),
+            "angle": .1,
+            "active": True
+        }
+    }
+    objects_json.append(obj_entry)
+
+# Write to file
+with open("objects_output.json", "w") as f:
+    json.dump(objects_json, f, indent=4)
+
+
 
 # ----------------------------
 # Visualization with Plotly

@@ -1,82 +1,202 @@
 [
     {
         "mesh": null,
-        "name": "sun",
-        "emissive": true,
-        "map": "sun.jpg",
-        "diameter": 4,
-        "xpos": 0,
-        "ypos": 5,
-        "zpos": 0,
+        "name": "obj1",
+        "emissive": false,
+        "map": null,
         "img": "img/textures/poster.png",
+        "diameter": 0.5825453457757226,
+        "xpos": 0.46854217842706647,
+        "ypos": 10.145032380468788,
+        "zpos": 5.2125312966465875,
+        "parm_a": 6.872700594236813,
+        "parm_b": 8.005575058716044,
+        "parm_c": 1.0,
         "rotation": {
-            "speed": 0,
-            "angle": 0
+            "speed": 0.0384897154924598,
+            "angle": 0.5539767248966069,
+            "active": true
         },
         "orbit": {
-            "radius": 0,
-            "speed": 0,
-            "angle": 0
+            "radius": 17,
+            "speed": 0.0049087199514394044,
+            "angle": 0.1,
+            "active": true
         }
     },
     {
         "mesh": null,
-        "name": "mercury",
+        "name": "obj2",
         "emissive": false,
-        "map": "mercury.jpg",
-        "diameter": 1,
-        "xpos": 4,
-        "ypos": 2,
-        "zpos": 0,
+        "map": null,
         "img": "img/textures/poster.png",
+        "diameter": 0.7148538589793427,
+        "xpos": 0.3637747025509801,
+        "ypos": 7.542435606878119,
+        "zpos": 12.284751832597822,
+        "parm_a": 9.75357153204958,
+        "parm_b": 8.540362888980226,
+        "parm_c": 1.0,
         "rotation": {
-            "speed": 0.4,
-            "angle": 1
+            "speed": 0.005472764271727515,
+            "angle": 1.5327291958313913,
+            "active": true
         },
         "orbit": {
-            "radius": 4,
-            "speed": 0.01,
-            "angle": 0.1
+            "radius": 9,
+            "speed": 0.0016073341040354695,
+            "angle": 0.1,
+            "active": true
         }
     },
     {
         "mesh": null,
-        "name": "venus",
+        "name": "obj3",
         "emissive": false,
-        "map": "venus.jpg",
-        "diameter": 1.5,
-        "xpos": 7,
-        "ypos": 3,
-        "zpos": 0,
+        "map": null,
         "img": "img/textures/poster.png",
+        "diameter": 0.6591670111852694,
+        "xpos": 0.7517663357133799,
+        "ypos": 4.855819889681605,
+        "zpos": 0.04504354091379783,
+        "parm_a": 8.659969709057025,
+        "parm_b": 5.102922471479012,
+        "parm_c": 2.0,
         "rotation": {
-            "speed": 0.0001,
-            "angle": 0.1
+            "speed": 0.0725993148026851,
+            "angle": 3.2074141826644835,
+            "active": true
         },
         "orbit": {
-            "radius": 7,
-            "speed": 0.005,
-            "angle": 0.1
+            "radius": 12,
+            "speed": 0.006501949202172674,
+            "angle": 0.1,
+            "active": true
         }
     },
     {
         "mesh": null,
-        "name": "earth",
+        "name": "obj4",
         "emissive": false,
-        "map": "earth.jpg",
-        "diameter": 1.55,
-        "xpos": 10,
-        "ypos": 7,
-        "zpos": 0,
+        "map": null,
         "img": "img/textures/poster.png",
+        "diameter": 0.5747374841188252,
+        "xpos": -0.877631993013506,
+        "ypos": 10.67986931639183,
+        "zpos": -0.6916982229612646,
+        "parm_a": 7.993292420985183,
+        "parm_b": 9.849549260809972,
+        "parm_c": 2.0,
         "rotation": {
-            "speed": 0.1,
-            "angle": 0.1
+            "speed": 0.020260827133018577,
+            "angle": 1.0666007406468356,
+            "active": true
         },
         "orbit": {
-            "radius": 14,
-            "speed": 0.002,
-            "angle": 0.1
+            "radius": 18,
+            "speed": 0.0010611260136200184,
+            "angle": 0.1,
+            "active": true
+        }
+    },
+    {
+        "mesh": null,
+        "name": "obj5",
+        "emissive": false,
+        "map": null,
+        "img": "img/textures/poster.png",
+        "diameter": 0.7671117368334277,
+        "xpos": 0.4530989644005555,
+        "ypos": 14.297176214021365,
+        "zpos": 1.4003358992534518,
+        "parm_a": 5.780093202212183,
+        "parm_b": 9.162213204002109,
+        "parm_c": 2.0,
+        "rotation": {
+            "speed": 0.0978744729782716,
+            "angle": 2.313479292213345,
+            "active": true
+        },
+        "orbit": {
+            "radius": 9,
+            "speed": 0.0027430838118378507,
+            "angle": 0.1,
+            "active": true
+        }
+    },
+    {
+        "mesh": null,
+        "name": "obj6",
+        "emissive": false,
+        "map": null,
+        "img": "img/textures/poster.png",
+        "diameter": 0.4836963163912251,
+        "xpos": 6.719509975515511,
+        "ypos": 8.923568683968911,
+        "zpos": 4.144633405716301,
+        "parm_a": 5.779972601681013,
+        "parm_b": 6.061695553391381,
+        "parm_c": 3.0,
+        "rotation": {
+            "speed": 0.06713000062558032,
+            "angle": 5.007404551395778,
+            "active": true
+        },
+        "orbit": {
+            "radius": 12,
+            "speed": 0.003738958167344374,
+            "angle": 0.1,
+            "active": true
+        }
+    },
+    {
+        "mesh": null,
+        "name": "obj7",
+        "emissive": false,
+        "map": null,
+        "img": "img/textures/poster.png",
+        "diameter": 0.5752867891211308,
+        "xpos": 6.810253708257392,
+        "ypos": 10.290645082106604,
+        "zpos": 6.180023455401665,
+        "parm_a": 5.290418060840997,
+        "parm_b": 5.909124836035503,
+        "parm_c": 3.0,
+        "rotation": {
+            "speed": 0.02740494439774678,
+            "angle": 4.354313358389377,
+            "active": true
+        },
+        "orbit": {
+            "radius": 18,
+            "speed": 0.006966217173205006,
+            "angle": 0.1,
+            "active": true
+        }
+    },
+    {
+        "mesh": null,
+        "name": "obj8",
+        "emissive": false,
+        "map": null,
+        "img": "img/textures/poster.png",
+        "diameter": 0.619817105976215,
+        "xpos": 6.636384731121129,
+        "ypos": 5.149491574351754,
+        "zpos": 5.25788925763055,
+        "parm_a": 9.330880728874675,
+        "parm_b": 5.917022549267169,
+        "parm_c": 3.0,
+        "rotation": {
+            "speed": 0.059030370774639684,
+            "angle": 5.7078301541535374,
+            "active": true
+        },
+        "orbit": {
+            "radius": 6,
+            "speed": 0.005167806778867301,
+            "angle": 0.1,
+            "active": true
         }
     }
 ]
