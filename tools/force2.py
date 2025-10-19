@@ -42,8 +42,8 @@ raw_attractors = {
 # Random properties a, b; fixed cluster c and diameter
 # Cluster membership: 2 objects in c=1, 3 objects in c=2 (as requested)
 clusters = np.array([1, 1, 2, 2, 2,3,3,3], dtype=float)  # c values
-prop_a   = np.random.uniform(5., 10., size=N)     # gravity-like
-prop_b   = np.random.uniform(5., 10., size=N)     # buoyancy-like
+prop_a   = np.random.uniform(-1,1, size=N)     # gravity-like
+prop_b   = np.random.uniform(-1,1, size=N)     # buoyancy-like
 diam     = np.random.uniform(0.4, 1.0, size=N)     # diameters (random, can be set explicitly)
 
 # Initial positions (random)
@@ -130,12 +130,12 @@ def compute_forces(positions):
     # --- 4) Gravity-like toward y=0 (negative y only) ---
     # f_y = -GLOBAL_GRAVITY_K * a_i
     for b in bodies:
-        F[b.i][1] += -GLOBAL_GRAVITY_K * b.a * positions[b.i][1] if positions[b.i][1] > 0 else 100000.0
+        F[b.i][1] += -GLOBAL_GRAVITY_K * (10 + b.a) * positions[b.i][1] if positions[b.i][1] > 0 else 100000.0
 
     # --- 5) Buoyancy-like opposite (positive y only) ---
     # f_y += +GLOBAL_GRAVITY_K * b_i
     for b in bodies:
-        F[b.i][1] += +GLOBAL_BUOYANCY_K * b.b
+        F[b.i][1] += +GLOBAL_BUOYANCY_K * (10 + b.b) if positions[b.i][1] > 0 else 100000.0
 
     return F
 
