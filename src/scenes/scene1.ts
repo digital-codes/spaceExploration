@@ -18,7 +18,49 @@ const setCb = (cb: (msg: string, id: number) => void) => {
     callback = cb;
 };
 
+export interface SceneParams {
+    cameraDistance?: number;
+    cameraAngle?: number;
+    shipSpeed?: number;
+    gravity?: number;
+    buoyance?: number;
+    cluster?: number;
+    camMode?: string;
+}
 
+
+const sysParms: SceneParams = {
+    gravity: 1.0,
+    buoyance: 1.0,
+    cluster: 1.0,
+    camMode: 'default', // other options: 'arcRotate', 'free', 'follow'
+}
+
+const getParams = function () : SceneParams {
+    return sysParms;
+}
+
+const setParams = function <K extends keyof SceneParams>(key: K, value: SceneParams[K]) {
+    if (!Object.prototype.hasOwnProperty.call(sysParms, key)) {
+        throw new Error(`Invalid parameter key: ${String(key)}`);
+    }
+    (sysParms as SceneParams)[key] = value;
+    console.log(`Parameter ${String(key)} set to ${value}`);
+}
+
+let engine: Engine | null = null;
+
+const disposeEngine = function () {
+    if (engine) {
+        engine.stopRenderLoop();
+        window.removeEventListener('resize', function () {
+            engine?.resize();
+        });
+        engine.dispose();
+        engine = null;
+        console.log("Engine disposed.");
+    }
+}
 
 const createGround = function (scene: Scene) {
     // Create a built-in "ground" shape.
@@ -129,15 +171,18 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
         throw new Error('Canvas element not found');
     }
     // Load the 3D engine
-    const engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
+    if (engine) {
+        console.log("Disposing existing engine.");
+        disposeEngine();
+    }
+    engine = new Engine(canvas, true, { preserveDrawingBuffer: true, stencil: true });
+    if (!engine) {
+        throw new Error('Engine creation failed');
+    }
     // CreateScene function that creates and return the scene
     const { scene, camera } = createScene(engine, canvas);
-
-    if (!scene) {
-        throw new Error('Scene creation failed');
-    }
-    if (!camera) {
-        throw new Error('Camera creation failed');
+    if (!scene || !camera || !engine.scenes[0]) {
+        throw new Error('Scene or Camera creation failed');
     }
     // define the object update function, before the scene renders.
 
@@ -147,7 +192,7 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
     let popId: string | null = null;
 
     // --- GUI Popup logic ---
-    const gui = AdvancedDynamicTexture.CreateFullscreenUI("UI",true, scene);
+    const gui = AdvancedDynamicTexture.CreateFullscreenUI("UI", true, scene);
     const popup = new Rectangle("popup");
     popup.width = "240px";
     popup.height = "100px";
@@ -180,12 +225,13 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
     // --- Link action ---
     linkBtn.onPointerClickObservable.add(() => {
         if (currentLink) window.open(currentLink, "_blank");
-    });    
+    });
 
     engine.scenes[0].beforeRender = function () {
         const camPos = camera.position;
         for (const idx in system) {
             const planet = system[idx];
+            if (!planet) continue;
             // console.log(planet.name);
             if (!planet.mesh) {
                 // skip planets that haven't been created yet
@@ -233,7 +279,7 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
                     text.text = "This is the sphere object: " + popId;
                     //console.log('Updating popup text for ' + popId);
                     popupVisible = true;
-                    popup.isVisible = true;
+                    // popup.isVisible = true; // !!!!!!!! use parent to display message 
                     //console.log("Object " + planet.name);
                     //console.log('Showing popup, distance: ' + dist);
                     // stop object rotation
@@ -262,84 +308,92 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
         };
     }
 
-        // the canvas/window resize event handler
-        window.addEventListener('resize', function () {
-            engine.resize();
-        })
+    // call resize from parent, if required
 
+    // run the render loop
+    engine.runRenderLoop(function () {
+        scene.render();
+    });
 
-        // run the render loop
-        engine.runRenderLoop(function () {
-            scene.render();
-        });
+    return canvas;
+}
 
-        return canvas;
+const createScene = function (engine: Engine, canvas: HTMLCanvasElement): { scene: Scene, camera: ArcRotateCamera } {
+    // Create a basic BJS Scene object
+    var scene = new Scene(engine);
+    if (!scene) {
+        throw new Error('Scene creation failed');
     }
-
-    const createScene = function (engine: Engine, canvas: HTMLCanvasElement): { scene: Scene, camera: ArcRotateCamera } {
-        // Create a basic BJS Scene object
-        var scene = new Scene(engine);
-        // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
-        var camera = new ArcRotateCamera('camera1', 0, 0, 10, Vector3.Zero(), scene);
-        // Target the camera to scene origin
-        camera.setTarget(Vector3.Zero());
-        // Attach the camera to the canvas
-        camera.attachControl(canvas, false);
-
-        // --- Smoothness tweaks ---
-        camera.wheelPrecision = 100;                // 🟢 smaller = faster zoom; larger = slower
-        camera.wheelDeltaPercentage = 0.01;         // 🟢 smooth zoom with percentage-based delta
-        camera.inertia = 0.9;                       // 🟢 smoothing after movement (0 = immediate)
-        camera.panningInertia = 0.9;                // 🟢 same for panning
-        camera.lowerRadiusLimit = 2;                // optional min zoom distance
-        camera.upperRadiusLimit = 100;              // optional max zoom distance
-
-
-
-        scene.clearColor = new Color4(0, 0, 0, 1);
-
-        // Have the Camera orbit the sun (third value moves camera away from center).
-
-        const galacticlight = new HemisphericLight('galacticlight', new Vector3(0, 1, 0), scene);
-
-        galacticlight.intensity = 0.5;
-
-        galacticlight.groundColor = new Color3(0.5, 0.5, 1.0);
-
-        // skybox.
-        const skybox = MeshBuilder.CreateBox('skybox', {
-            size: 1000               // Uniform side length; you could also use width/height/depth
-        }, scene);
-
-        skybox.infiniteDistance = true;
-
-        // skybox material.
-        const skyboxMaterial = new StandardMaterial("skyBox", scene);
-        skyboxMaterial.backFaceCulling = false;
-        skyboxMaterial.diffuseColor = new Color3(0, 0, 0);
-        skyboxMaterial.specularColor = new Color3(0, 0, 0);
-
-        // Cubemap.
-        skyboxMaterial.reflectionTexture = new CubeTexture('img/textures/skybox/skybox',
-            scene, ['_px.png', '_py.png', '_pz.png', '_nx.png', '_ny.png', '_nz.png']);
-
-        skyboxMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
-        skybox.material = skyboxMaterial;
-
-        // Create the objects
-        system.forEach(object => {
-            createPlanet(object, scene);
-            if (object.name === 'obj1') {
-                console.log('Adding sunlight for ' + object.name);
-                var sunLight = new PointLight('sunlight', Vector3.Zero(), scene);
-                sunLight.intensity = 20.2;
-            }
-        });
-        // Create the ground
-        createGround(scene);
-
-        return { scene, camera };
+    // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
+    var camera = new ArcRotateCamera('camera1', 0, 0, 10, Vector3.Zero(), scene);
+    if (!camera) {
+        throw new Error('Camera creation failed');
     }
+    // Target the camera to scene origin
+    camera.setTarget(Vector3.Zero());
+    // Attach the camera to the canvas
+    camera.attachControl(canvas, false);
+
+    // --- Smoothness tweaks ---
+    camera.wheelPrecision = 100;                // 🟢 smaller = faster zoom; larger = slower
+    camera.wheelDeltaPercentage = 0.01;         // 🟢 smooth zoom with percentage-based delta
+    camera.inertia = 0.9;                       // 🟢 smoothing after movement (0 = immediate)
+    camera.panningInertia = 0.9;                // 🟢 same for panning
+    camera.lowerRadiusLimit = 2;                // optional min zoom distance
+    camera.upperRadiusLimit = 100;              // optional max zoom distance
 
 
-    export {buildCanvas, setCb};
+
+    scene.clearColor = new Color4(0, 0, 0, 1);
+
+    // Have the Camera orbit the sun (third value moves camera away from center).
+
+    const galacticlight = new HemisphericLight('galacticlight', new Vector3(0, 1, 0), scene);
+
+    galacticlight.intensity = 0.5;
+
+    galacticlight.groundColor = new Color3(0.5, 0.5, 1.0);
+
+    // skybox.
+    const skybox = MeshBuilder.CreateBox('skybox', {
+        size: 1000               // Uniform side length; you could also use width/height/depth
+    }, scene);
+
+    skybox.infiniteDistance = true;
+
+    // skybox material.
+    const skyboxMaterial = new StandardMaterial("skyBox", scene);
+    skyboxMaterial.backFaceCulling = false;
+    skyboxMaterial.diffuseColor = new Color3(0, 0, 0);
+    skyboxMaterial.specularColor = new Color3(0, 0, 0);
+
+    // Cubemap.
+    skyboxMaterial.reflectionTexture = new CubeTexture('img/textures/skybox/skybox',
+        scene, ['_px.png', '_py.png', '_pz.png', '_nx.png', '_ny.png', '_nz.png']);
+
+    skyboxMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
+    skybox.material = skyboxMaterial;
+
+    // Create the objects
+    system.forEach(object => {
+        createPlanet(object, scene);
+        if (object.name === 'obj1') {
+            console.log('Adding sunlight for ' + object.name);
+            var sunLight = new PointLight('sunlight', Vector3.Zero(), scene);
+            sunLight.intensity = 20.2;
+        }
+    });
+    // Create the ground
+    createGround(scene);
+
+    return { scene, camera };
+}
+
+const resizeGame = function () {
+    console.log("Resizing game canvas.");
+    if (engine) {
+        engine.resize();
+    }
+}
+
+export { buildCanvas, setCb, disposeEngine, getParams, setParams, resizeGame };

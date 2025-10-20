@@ -13,8 +13,8 @@ the BabylonJS Engine or Scene object reactive. If you suspect such behaviour, te
 */
 
 
-import { ref, onMounted } from "@vue/runtime-core";
-import { buildCanvas, setCb } from "../scenes/scene1";
+import { ref, onMounted, onBeforeUnmount, nextTick } from "@vue/runtime-core";
+import { buildCanvas, setCb, disposeEngine, getParams, setParams, resizeGame } from "../scenes/scene1";
 
 /*
 const emit = defineEmits<{
@@ -22,16 +22,43 @@ const emit = defineEmits<{
 }>();
 */
 
+const gameMsg = ref<string>(""); 
+const gameContainer = ref<HTMLDivElement | null>(null);
 const bjsCanvas = ref<HTMLCanvasElement | null>(null);
+
+let resizeObserver: ResizeObserver | null = null;
+
 onMounted(async () => {
   if (bjsCanvas.value) {
     await buildCanvas(bjsCanvas.value);
   }
   setCb(rxMessage) // set callback
+  const params = getParams();
+  console.log("Initial scene params:", params);
+  await nextTick()
+  if (params.gravity === 1.0) {
+    setParams("gravity", 2.0);
+    console.log("Updated gravity to:", 2.0);
+  }
+  // Resize observer to detect CSS size changes
+  resizeObserver = new ResizeObserver(() => {
+    resizeGame();
+  });
+  resizeObserver.observe(gameContainer.value!);
+
+});
+
+
+onBeforeUnmount(() => {
+  if (resizeObserver) {
+    resizeObserver.disconnect();
+  }
+  disposeEngine();
 });
 
 const rxMessage = (msg: string, id: number) => {
   console.log("GamePane received message:", msg, id);
+  gameMsg.value = msg + ": " + id; // Update the game message
 };
 
 
@@ -39,8 +66,23 @@ const rxMessage = (msg: string, id: number) => {
 </script>
 
 <template>
-  <canvas ref="bjsCanvas" width="500" height="500" />
+  <div>
+    <h2>BabylonJS Vue3 Game Pane</h2>
+    <p >{{ gameMsg }}</p>
+  </div>
+  <div class="gamepane-canvas">
+  <canvas ref="bjsCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
+</div>
 </template>
 
 <style scoped>
+.gamepane-canvas {
+  box-sizing: border-box;
+  width: 100%; 
+  height: 50vh;
+  border: 2px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+}
+
 </style>
