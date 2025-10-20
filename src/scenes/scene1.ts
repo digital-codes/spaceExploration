@@ -1,4 +1,3 @@
-// import * as BABYLON from 'babylonjs';
 import {
     Scene, Engine, HemisphericLight, MeshBuilder,
     Mesh, Vector3, Color3, Color4, StandardMaterial,
@@ -9,8 +8,17 @@ import {
 
 import { Button, AdvancedDynamicTexture, Rectangle, TextBlock } from "@babylonjs/gui";
 
-import system from './assets/data/objects.json';
-console.log(system);
+import system from '../assets/data/objects.json';
+// console.log(system);
+
+let callback: (msg: string, id: number) => void;
+
+const setCb = (cb: (msg: string, id: number) => void) => {
+    console.log("SetCB called");
+    callback = cb;
+};
+
+
 
 const createGround = function (scene: Scene) {
     // Create a built-in "ground" shape.
@@ -116,9 +124,7 @@ const createPlanet = function (planetData: any, scene: Scene) {
 };
 
 
-const buildCanvas = (elem: HTMLElement) => {
-    // Get the canvas DOM element
-    var canvas: HTMLCanvasElement | null = document.getElementById(elem.id) as HTMLCanvasElement;
+const buildCanvas = (canvas: HTMLCanvasElement) => {
     if (!canvas) {
         throw new Error('Canvas element not found');
     }
@@ -210,11 +216,14 @@ const buildCanvas = (elem: HTMLElement) => {
                     if (popupVisible && popId === planet.name) {
                         popupVisible = false;
                         popup.isVisible = false;
-                        console.log("Object " + planet.name);
-                        console.log('Hiding popup (out of view), distance: ' + dist);
+                        //console.log("Object " + planet.name);
+                        //console.log('Hiding popup (out of view), distance: ' + dist);
                         planet.rotation.active = true;
                         planet.orbit.active = true;
                         popId = null;
+                        if (callback) {
+                            callback("Hiding popup (out of view) for " + planet.name, 0);
+                        }
                     }
                     continue; // skip to next object
                 }
@@ -222,26 +231,32 @@ const buildCanvas = (elem: HTMLElement) => {
                 if (!popupVisible) {
                     popId = planet.name;
                     text.text = "This is the sphere object: " + popId;
-                    console.log('Updating popup text for ' + popId);
+                    //console.log('Updating popup text for ' + popId);
                     popupVisible = true;
                     popup.isVisible = true;
-                    console.log("Object " + planet.name);
-                    console.log('Showing popup, distance: ' + dist);
+                    //console.log("Object " + planet.name);
+                    //console.log('Showing popup, distance: ' + dist);
                     // stop object rotation
                     planet.rotation.active = false;
                     planet.orbit.active = false;
+                    if (callback) {
+                        callback("Showing popup for " + planet.name, 0);
+                    }
                 }
             } else {
-                console.log('Object ' + planet.name + ' is far, distance: ' + dist);
+                // console.log('Object ' + planet.name + ' is far, distance: ' + dist);
                 // we are far away
                 if (popupVisible && popId === planet.name) {
                     popupVisible = false;
                     popup.isVisible = false;
                     popId = null;
-                    console.log("Object " + planet.name);
-                    console.log('Hiding popup, distance: ' + dist);
+                    //console.log("Object " + planet.name);
+                    //console.log('Hiding popup, distance: ' + dist);
                     planet.rotation.active = true;
                     planet.orbit.active = true;
+                    if (callback) {
+                        callback("Hiding popup (far) for " + planet.name, 0);
+                    }
                 }
             }
         };
@@ -327,4 +342,4 @@ const buildCanvas = (elem: HTMLElement) => {
     }
 
 
-    export default buildCanvas;
+    export {buildCanvas, setCb};
