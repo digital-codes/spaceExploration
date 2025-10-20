@@ -25,10 +25,22 @@ const emit = defineEmits<{
 const gameMsg = ref<string>(""); 
 const gameContainer = ref<HTMLDivElement | null>(null);
 const bjsCanvas = ref<HTMLCanvasElement | null>(null);
-
+const introVideo = ref(null);
+const showCanvas = ref(false);
+const showVideo = ref(true);
 let resizeObserver: ResizeObserver | null = null;
 
+const videoSrc = new URL('/video/journeyStarts_2_veo3_1.mp4', import.meta.url).href;
+
 onMounted(async () => {
+ // autoplay video as soon as mounted
+  if (introVideo.value) {
+    gameMsg.value = "Starting intro video...";
+    await nextTick();
+    introVideo.value.play().catch(() => {
+      console.warn("Autoplay may require muted video or user interaction");
+    });
+  }  
   if (bjsCanvas.value) {
     await buildCanvas(bjsCanvas.value);
   }
@@ -56,6 +68,16 @@ onBeforeUnmount(() => {
   disposeEngine();
 });
 
+function onVideoEnd() {
+  showVideo.value = false;
+  showCanvas.value = true;
+
+  // small fade-in delay (optional aesthetic)
+  setTimeout(() => {
+    setParams("renderLoop", true);
+  }, 300);
+}
+
 const rxMessage = (msg: string, id: number) => {
   console.log("GamePane received message:", msg, id);
   gameMsg.value = msg + ": " + id; // Update the game message
@@ -70,9 +92,35 @@ const rxMessage = (msg: string, id: number) => {
     <h2>BabylonJS Vue3 Game Pane</h2>
     <p >{{ gameMsg }}</p>
   </div>
+
+<div class="gamepane-container" ref="gameContainer">
+    <!-- Intro video -->
+    <video 
+      v-if="showVideo"
+      ref="introVideo"
+      class="intro-video"
+      autoplay
+      muted
+      playsinline
+      controls 
+      @ended="onVideoEnd"
+    >
+      <source :src="videoSrc" type="video/mp4" />
+      Your browser does not support the video tag.
+    </video>
+
+    <!-- BabylonJS canvas (hidden until video ends) -->
+    <canvas
+      v-show="showCanvas"
+      ref="bjsCanvas"
+      class="gamepane-canvas"
+    ></canvas>
+  </div>
+  <!--  
   <div class="gamepane-canvas">
   <canvas ref="bjsCanvas" style="width: 100%; height: 100%; display: block;"></canvas>
 </div>
+  -->
 </template>
 
 <style scoped>
@@ -83,6 +131,21 @@ const rxMessage = (msg: string, id: number) => {
   border: 2px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
+}
+.babylon-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+.intro-video {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.gamepane-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
 }
 
 </style>

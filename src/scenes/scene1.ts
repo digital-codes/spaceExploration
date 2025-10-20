@@ -19,6 +19,7 @@ const setCb = (cb: (msg: string, id: number) => void) => {
 };
 
 export interface SceneParams {
+    renderLoop?: boolean;
     cameraDistance?: number;
     cameraAngle?: number;
     shipSpeed?: number;
@@ -30,6 +31,7 @@ export interface SceneParams {
 
 
 const sysParms: SceneParams = {
+    renderLoop: false,
     gravity: 1.0,
     buoyance: 1.0,
     cluster: 1.0,
@@ -312,7 +314,9 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
 
     // run the render loop
     engine.runRenderLoop(function () {
-        scene.render();
+        if (sysParms.renderLoop) {
+            scene.render();
+        }
     });
 
     return canvas;
