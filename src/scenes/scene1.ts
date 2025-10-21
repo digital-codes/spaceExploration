@@ -479,6 +479,26 @@ const createGlider = async function (scene: Scene) {
         throw new Error("Glider mesh not found in loaded model.");
     }
     console.log("Glider model loaded.");
+    // materials
+    const lmat = new PBRMaterial("ThrusterLeftMat", scene);
+    lmat.albedoColor = Color3.Black();
+    lmat.metallic = 0;
+    lmat.roughness = 1;
+    lmat.disableLighting = true;  // rely purely on emissive
+    lmat.emissiveColor = glider.thrustOnColor;
+    lmat.emissiveIntensity = 8;
+    TLmesh.material = lmat;
+
+    const rmat = new PBRMaterial("ThrusterLeftMat", scene);
+    rmat.albedoColor = Color3.Black();
+    rmat.metallic = 0;
+    rmat.roughness = 1;
+    rmat.disableLighting = true;  // rely purely on emissive
+    rmat.emissiveColor = glider.thrustOnColor;
+    rmat.emissiveIntensity = 8;
+    TRmesh.material = rmat;
+
+
     glider.tl = TLmesh;
     glider.tr = TRmesh;
     glider.mesh.position = new Vector3(glider.posX, glider.posY, glider.posZ);
@@ -488,7 +508,7 @@ const createGlider = async function (scene: Scene) {
 
     // 2️⃣ Add a glow layer (this makes emissive visible)
     const glow = new GlowLayer("glow", scene);
-    glow.intensity = 1.5;
+    glow.intensity = .7;
 
 }
 
@@ -503,7 +523,7 @@ const setThrusters = (on: boolean) => {
         if (on) {
             if (mat && mat instanceof PBRMaterial) {
                 mat.emissiveColor = color;
-                mat.emissiveIntensity = 50;      // stronger glow
+                mat.emissiveIntensity = 5;      // stronger glow
                 mat.disableLighting = true;    // keep PBR lighting
             } else {
                 console.log("Thruster material is not PBRMaterial");
