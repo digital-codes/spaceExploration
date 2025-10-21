@@ -64,19 +64,62 @@ def wing(sign=1,thick=0.05):
        1,5,6,1,6,2,2,6,7,2,7,3,3,7,4,3,4,0]
     return v,f
 
+
+# --- correct thruster geometry ---
+def make_thruster(radius=0.35, length=0.9, seg=32):
+    """Closed cylinder oriented along Z, normals facing outward."""
+    pos=[]; idx=[]
+    h = length / 2
+    # side vertices
+    for i in range(seg):
+        theta = 2 * math.pi * i / seg
+        x = radius * math.cos(theta)
+        y = radius * math.sin(theta)
+        pos += [x, y, -h, x, y, h]
+    # side faces
+    for i in range(seg):
+        a = 2 * i
+        b = (2 * ((i + 1) % seg))
+        idx += [a, b, a + 1, b, b + 1, a + 1]
+    # caps
+    base_center = len(pos) // 3
+    pos += [0, 0, -h]
+    for i in range(seg):
+        t1 = 2 * math.pi * i / seg
+        t2 = 2 * math.pi * (i + 1) / seg
+        pos += [radius * math.cos(t1), radius * math.sin(t1), -h]
+        pos += [radius * math.cos(t2), radius * math.sin(t2), -h]
+        n = len(pos) // 3
+        idx += [base_center, n - 2, n - 1]
+    top_center = len(pos) // 3
+    pos += [0, 0, h]
+    for i in range(seg):
+        t1 = 2 * math.pi * i / seg
+        t2 = 2 * math.pi * (i + 1) / seg
+        pos += [radius * math.cos(t1), radius * math.sin(t1), h]
+        pos += [radius * math.cos(t2), radius * math.sin(t2), h]
+        n = len(pos) // 3
+        idx += [top_center, n - 1, n - 2]
+    return pos, idx
+
+
+
 # === BUILD PARTS ===
 f_pos, f_idx = ellipsoid(0.8,0.6,2.5)
 wR_pos, wR_idx = wing( 1)
 wL_pos, wL_idx = wing(-1)
-t_pos, t_idx = cylinder()
+
+# replace your old `cylinder()` calls
+t_pos, t_idx = make_thruster()
 
 parts = [
     ("Fuselage", f_pos, f_idx, "Hull"),
     ("WingRight", wR_pos, wR_idx, "Hull"),
     ("WingLeft", wL_pos, wL_idx, "Hull"),
-    ("ThrusterRight", [x+0.7 if i%3==0 else x for i,x in enumerate(t_pos)], t_idx, "Thruster"),
-    ("ThrusterLeft", [x-0.7 if i%3==0 else x for i,x in enumerate(t_pos)], t_idx, "Thruster")
+    ("ThrusterLeft",  [x-0.7 if i%3==0 else x for i,x in enumerate(t_pos)], t_idx, "ThrusterLeftMat"),
+    ("ThrusterRight", [x+0.7 if i%3==0 else x for i,x in enumerate(t_pos)], t_idx, "ThrusterRightMat"),
 ]
+
 
 # === TEXTURES ===
 def save_png(img, name):
@@ -124,30 +167,42 @@ def add_mesh(name, pos, idx, mat_index):
     nodes.append({"name":name,"mesh":len(meshes)-1})
 
 # Materials
-materials=[
+materials = [
     {
-        "name":"Hull",
-        "pbrMetallicRoughness":{
-            "baseColorTexture":{"index":0},
-            "metallicRoughnessTexture":{"index":1}
+        "name": "Hull",
+        "pbrMetallicRoughness": {
+            "baseColorTexture": {"index": 0},
+            "metallicRoughnessTexture": {"index": 1},
         },
-        "normalTexture":{"index":2},
-        "emissiveTexture":{"index":3},
-        "emissiveFactor":[0,0,0],
-        "doubleSided":True
+        "normalTexture": {"index": 2},
+        "emissiveTexture": {"index": 3},
+        "emissiveFactor": [0, 0, 0],
+        "doubleSided": True,
     },
     {
-        "name":"Thruster",
-        "pbrMetallicRoughness":{
-            "baseColorTexture":{"index":4},
-            "metallicRoughnessTexture":{"index":5}
+        "name": "ThrusterLeftMat",
+        "pbrMetallicRoughness": {
+            "baseColorTexture": {"index": 4},
+            "metallicRoughnessTexture": {"index": 5},
         },
-        "normalTexture":{"index":6},
-        "emissiveTexture":{"index":7},
-        "emissiveFactor":[0,0,0],
-        "doubleSided":False
-    }
+        "normalTexture": {"index": 6},
+        "emissiveTexture": {"index": 7},
+        "emissiveFactor": [0.05, 0.2, 0.6],  # faint blue glow by default
+        "doubleSided": True,
+    },
+    {
+        "name": "ThrusterRightMat",
+        "pbrMetallicRoughness": {
+            "baseColorTexture": {"index": 4},
+            "metallicRoughnessTexture": {"index": 5},
+        },
+        "normalTexture": {"index": 6},
+        "emissiveTexture": {"index": 7},
+        "emissiveFactor": [0.05, 0.2, 0.6],
+        "doubleSided": True,
+    },
 ]
+
 
 textures=[
     {"source":0},{"source":1},{"source":2},{"source":3},
@@ -159,7 +214,10 @@ images=[
 ]
 
 for nm,pos,ind,mat in parts:
-    add_mesh(nm,pos,ind,0 if mat=="Hull" else 1)
+    if nm == "ThrusterLeft": m_idx = 1
+    elif nm == "ThrusterRight": m_idx = 2
+    else: m_idx = 0
+    add_mesh(nm,pos,ind,m_idx)
 
 root_index=len(nodes)
 nodes.append({"name":"SpaceGlider","children":list(range(root_index))})

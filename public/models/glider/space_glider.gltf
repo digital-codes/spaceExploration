@@ -25,11 +25,11 @@
       "mesh": 2
     },
     {
-      "name": "ThrusterRight",
+      "name": "ThrusterLeft",
       "mesh": 3
     },
     {
-      "name": "ThrusterLeft",
+      "name": "ThrusterRight",
       "mesh": 4
     },
     {
@@ -81,7 +81,7 @@
       ]
     },
     {
-      "name": "ThrusterRight",
+      "name": "ThrusterLeft",
       "primitives": [
         {
           "attributes": {
@@ -93,14 +93,14 @@
       ]
     },
     {
-      "name": "ThrusterLeft",
+      "name": "ThrusterRight",
       "primitives": [
         {
           "attributes": {
             "POSITION": 8
           },
           "indices": 9,
-          "material": 1
+          "material": 2
         }
       ]
     }
@@ -130,7 +130,7 @@
       "doubleSided": true
     },
     {
-      "name": "Thruster",
+      "name": "ThrusterLeftMat",
       "pbrMetallicRoughness": {
         "baseColorTexture": {
           "index": 4
@@ -146,11 +146,34 @@
         "index": 7
       },
       "emissiveFactor": [
-        0,
-        0,
-        0
+        0.05,
+        0.2,
+        0.6
       ],
-      "doubleSided": false
+      "doubleSided": true
+    },
+    {
+      "name": "ThrusterRightMat",
+      "pbrMetallicRoughness": {
+        "baseColorTexture": {
+          "index": 4
+        },
+        "metallicRoughnessTexture": {
+          "index": 5
+        }
+      },
+      "normalTexture": {
+        "index": 6
+      },
+      "emissiveTexture": {
+        "index": 7
+      },
+      "emissiveFactor": [
+        0.05,
+        0.2,
+        0.6
+      ],
+      "doubleSided": true
     }
   ],
   "textures": [
@@ -208,7 +231,7 @@
   "buffers": [
     {
       "uri": "space_glider_v4.bin",
-      "byteLength": 35100
+      "byteLength": 35052
     }
   ],
   "bufferViews": [
@@ -251,24 +274,24 @@
     {
       "buffer": 0,
       "byteOffset": 28860,
-      "byteLength": 2352,
+      "byteLength": 2328,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 31212,
+      "byteOffset": 31188,
       "byteLength": 768,
       "target": 34963
     },
     {
       "buffer": 0,
-      "byteOffset": 31980,
-      "byteLength": 2352,
+      "byteOffset": 31956,
+      "byteLength": 2328,
       "target": 34962
     },
     {
       "buffer": 0,
-      "byteOffset": 34332,
+      "byteOffset": 34284,
       "byteLength": 768,
       "target": 34963
     }
@@ -343,15 +366,15 @@
     {
       "bufferView": 6,
       "componentType": 5126,
-      "count": 196,
+      "count": 194,
       "type": "VEC3",
       "min": [
-        0.35,
+        -1.0499999999999998,
         -0.35,
         -0.45
       ],
       "max": [
-        1.0499999999999998,
+        -0.35,
         0.35,
         0.45
       ]
@@ -365,15 +388,15 @@
     {
       "bufferView": 8,
       "componentType": 5126,
-      "count": 196,
+      "count": 194,
       "type": "VEC3",
       "min": [
-        -1.0499999999999998,
+        0.35,
         -0.35,
         -0.45
       ],
       "max": [
-        -0.35,
+        1.0499999999999998,
         0.35,
         0.45
       ]

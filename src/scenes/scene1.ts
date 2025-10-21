@@ -1,10 +1,10 @@
 import {
     Scene, Engine, HemisphericLight, MeshBuilder,
     Mesh, AbstractMesh, Vector3, Color3, Color4, StandardMaterial,
-    Texture, CubeTexture, PointLight,
+    Texture, CubeTexture, PointLight, GlowLayer,
     DynamicTexture, Frustum,
-    ArcRotateCamera,
-    TransformNode,DirectionalLight,
+    ArcRotateCamera, PBRMaterial,
+    TransformNode, DirectionalLight,
     type Nullable
 } from '@babylonjs/core';
 import { AppendSceneAsync } from "@babylonjs/core/Loading/sceneLoader";
@@ -66,9 +66,9 @@ const glider = {
     rotX: 0.0,
     rotY: 0.0,
     rotZ: 0.0,
-    posX: 1,
+    posX: 2,
     posY: 1,
-    posZ: 1,
+    posZ: 3,
     thrustersOn: true,
     thrustOffColor: new Color3(0.0, 0.0, 0.0), // default black
     thrustOnColor: new Color3(0.1, 0.7, 1.0), // icy blue
@@ -267,10 +267,10 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
             glider.posX += glider.speedX;
             glider.posY += glider.speedY;
             glider.posZ += glider.speedZ;
-/* The above code is setting the position of a mesh object named "glider" using the values of its posX,
-posY, and posZ properties. It is creating a new Vector3 object with these values and assigning it to
-the position property of the glider.mesh object. */
-            glider.mesh.position = new Vector3(glider.posX, glider.posY, glider.posZ);  
+            /* The above code is setting the position of a mesh object named "glider" using the values of its posX,
+            posY, and posZ properties. It is creating a new Vector3 object with these values and assigning it to
+            the position property of the glider.mesh object. */
+            //glider.mesh.position = new Vector3(glider.posX, glider.posY, glider.posZ);  
         }
         const camPos = camera.position;
         for (let idx = 0; idx < system.length; idx++) {
@@ -352,6 +352,13 @@ the position property of the glider.mesh object. */
         };
     }
 
+    console.log("Env Texture:", scene.environmentTexture);             // should be a valid environment texture (HDR .env)
+    console.log("Tone Mapping Enabled:", scene.imageProcessingConfiguration.toneMappingEnabled); // true if HDR tone mapping active
+    // Guard access because scene.getEngine() returns AbstractEngine in types; cast or check before reading isHDR
+    const _eng = scene.getEngine();
+    console.log('isHDR' in _eng ? ( _eng as any ).isHDR : false);              // Babylon 8+ engine-level HDR flag
+
+
     // call resize from parent, if required
 
     // run the render loop
@@ -388,9 +395,14 @@ const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): 
     camera.lowerRadiusLimit = 2;                // optional min zoom distance
     camera.upperRadiusLimit = 100;              // optional max zoom distance
 
-
+    /*
+    scene.createDefaultEnvironment({
+        environmentTexture: undefined, // use built-in neutral HDR if none provided
+    });
+    */
 
     scene.clearColor = new Color4(0, 0, 0, 1);
+
 
     // Have the Camera orbit the sun (third value moves camera away from center).
 
@@ -427,7 +439,6 @@ const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): 
     skyboxMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
     skybox.material = skyboxMaterial;
     
-
 
     // Create the objects
     system.forEach(object => {
@@ -473,22 +484,41 @@ const createGlider = async function (scene: Scene) {
     glider.mesh.position = new Vector3(glider.posX, glider.posY, glider.posZ);
     glider.mesh.rotation = new Vector3(glider.rotX, glider.rotY, glider.rotZ);
     glider.mesh.scaling = new Vector3(1.0, 1.0, 1.0);
+
+
+    // 2️⃣ Add a glow layer (this makes emissive visible)
+    const glow = new GlowLayer("glow", scene);
+    glow.intensity = 1.5;
+
 }
 
 const setThrusters = (on: boolean) => {
+    console.log(`Setting thrusters ${on ? 'ON' : 'OFF'}`);
     const color = on ? glider.thrustOnColor : glider.thrustOffColor;
+
     [glider.tl, glider.tr].forEach(m => {
         if (!m || !m.material) return;
         const mat: any = m.material;
-        // Works for StandardMaterial, PBRMaterial and other material types exposing emissive properties:
-        if (mat.emissiveColor !== undefined) {
-            mat.emissiveColor = color;
-        }
-        // Boost intensity a bit when on (only for materials that support it)
-        if (mat.emissiveIntensity !== undefined) {
-            mat.emissiveIntensity = on ? 2.0 : 1.0;
+        console.log("Coloring thruster:", m.name, "to", color.toString());
+        if (on) {
+            if (mat && mat instanceof PBRMaterial) {
+                mat.emissiveColor = color;
+                mat.emissiveIntensity = 50;      // stronger glow
+                mat.disableLighting = true;    // keep PBR lighting
+            } else {
+                console.log("Thruster material is not PBRMaterial");
+            }
+        } else {
+            if (mat && mat instanceof PBRMaterial) {
+                mat.emissiveColor = color;
+                mat.emissiveIntensity = 1;
+                mat.disableLighting = false;   
+            } else {
+                console.log("Thruster material is not PBRMaterial");
+            }
         }
     });
+    
 };
 
 
@@ -499,4 +529,4 @@ const resizeGame = function () {
     }
 }
 
-export { buildCanvas, setCb, disposeEngine, getParams, setParams, resizeGame };
+export { buildCanvas, setCb, disposeEngine, getParams, setParams, resizeGame, setThrusters };

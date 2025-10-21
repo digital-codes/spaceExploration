@@ -84,7 +84,12 @@ const rxMessage = (msg: string, id: number) => {
   gameMsg.value = msg + ": " + id; // Update the game message
 };
 
-
+const toggleThrusters = () => {
+  const params = getParams();
+  const thrustersOn = params.thrustersOn as boolean;
+  setParams("thrustersOn", !thrustersOn);
+  console.log(`Thrusters turned ${!thrustersOn ? 'ON' : 'OFF'}`);
+};
 
 </script>
 
@@ -92,7 +97,12 @@ const rxMessage = (msg: string, id: number) => {
   <div>
     <h2>BabylonJS Vue3 Game Pane</h2>
     <p >{{ gameMsg }}</p>
-    <button v-if="showVideo" @click="onVideoEnd">Skip</button>
+    <div v-if="showVideo">
+    <button @click="onVideoEnd">Skip</button>
+    </div>
+    <div v-if="showCanvas">
+    <button @click="toggleThrusters">Thrust</button>
+    </div>
   </div>
 
 <div class="gamepane-container" ref="gameContainer">
