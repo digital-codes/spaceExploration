@@ -71,6 +71,7 @@ onBeforeUnmount(() => {
 function onVideoEnd() {
   showVideo.value = false;
   showCanvas.value = true;
+  gameMsg.value = "Starting ...";
 
   // small fade-in delay (optional aesthetic)
   setTimeout(() => {
@@ -91,6 +92,7 @@ const rxMessage = (msg: string, id: number) => {
   <div>
     <h2>BabylonJS Vue3 Game Pane</h2>
     <p >{{ gameMsg }}</p>
+    <button v-if="showVideo" @click="onVideoEnd">Skip</button>
   </div>
 
 <div class="gamepane-container" ref="gameContainer">

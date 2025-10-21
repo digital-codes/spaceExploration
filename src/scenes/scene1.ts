@@ -9,7 +9,7 @@ import {
 import { Button, AdvancedDynamicTexture, Rectangle, TextBlock } from "@babylonjs/gui";
 
 import system from '../assets/data/objects.json';
-// console.log(system);
+console.log(system);
 
 let callback: (msg: string, id: number) => void;
 
@@ -231,7 +231,7 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
 
     engine.scenes[0].beforeRender = function () {
         const camPos = camera.position;
-        for (const idx in system) {
+        for (let idx = 0; idx < system.length; idx++) {
             const planet = system[idx];
             if (!planet) continue;
             // console.log(planet.name);
@@ -270,7 +270,7 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
                         planet.orbit.active = true;
                         popId = null;
                         if (callback) {
-                            callback("Hiding popup (out of view) for " + planet.name, 0);
+                            callback("off", idx);
                         }
                     }
                     continue; // skip to next object
@@ -288,7 +288,7 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
                     planet.rotation.active = false;
                     planet.orbit.active = false;
                     if (callback) {
-                        callback("Showing popup for " + planet.name, 0);
+                        callback("on", idx);
                     }
                 }
             } else {
@@ -303,7 +303,7 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
                     planet.rotation.active = true;
                     planet.orbit.active = true;
                     if (callback) {
-                        callback("Hiding popup (far) for " + planet.name, 0);
+                        callback("off", idx);
                     }
                 }
             }
@@ -329,7 +329,7 @@ const createScene = function (engine: Engine, canvas: HTMLCanvasElement): { scen
         throw new Error('Scene creation failed');
     }
     // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
-    var camera = new ArcRotateCamera('camera1', 0, 0, 10, Vector3.Zero(), scene);
+    var camera = new ArcRotateCamera('camera1', 0, 1.2, 50, Vector3.Zero(), scene);
     if (!camera) {
         throw new Error('Camera creation failed');
     }
