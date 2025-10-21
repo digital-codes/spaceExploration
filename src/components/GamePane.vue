@@ -152,6 +152,7 @@ const toggleThrusters = () => {
 .intro-video {
   width: 100%;
   height: auto;
+  max-height: 50vh;
   display: block;
 }
 .gamepane-container {
