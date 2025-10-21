@@ -1,10 +1,15 @@
 import {
     Scene, Engine, HemisphericLight, MeshBuilder,
-    Mesh, Vector3, Color3, Color4, StandardMaterial,
+    Mesh, AbstractMesh, Vector3, Color3, Color4, StandardMaterial,
     Texture, CubeTexture, PointLight,
     DynamicTexture, Frustum,
-    ArcRotateCamera
+    ArcRotateCamera,
+    TransformNode,DirectionalLight,
+    type Nullable
 } from '@babylonjs/core';
+import { AppendSceneAsync } from "@babylonjs/core/Loading/sceneLoader";
+import "@babylonjs/loaders/glTF"; // Enable GLTF/GLB loader
+
 
 import { Button, AdvancedDynamicTexture, Rectangle, TextBlock } from "@babylonjs/gui";
 
@@ -27,6 +32,7 @@ export interface SceneParams {
     buoyance?: number;
     cluster?: number;
     camMode?: string;
+    thrustersOn?: boolean;
 }
 
 
@@ -36,9 +42,10 @@ const sysParms: SceneParams = {
     buoyance: 1.0,
     cluster: 1.0,
     camMode: 'default', // other options: 'arcRotate', 'free', 'follow'
+    thrustersOn: false,
 }
 
-const getParams = function () : SceneParams {
+const getParams = function (): SceneParams {
     return sysParms;
 }
 
@@ -49,6 +56,26 @@ const setParams = function <K extends keyof SceneParams>(key: K, value: ScenePar
     (sysParms as SceneParams)[key] = value;
     console.log(`Parameter ${String(key)} set to ${value}`);
 }
+
+// glider
+const glider = {
+    mesh: null as Nullable<TransformNode> | null,
+    speedX: 0.002,
+    speedY: 0.004,
+    speedZ: 0.003,
+    rotX: 0.0,
+    rotY: 0.0,
+    rotZ: 0.0,
+    posX: 1,
+    posY: 1,
+    posZ: 1,
+    thrustersOn: true,
+    thrustOffColor: new Color3(0.0, 0.0, 0.0), // default black
+    thrustOnColor: new Color3(0.1, 0.7, 1.0), // icy blue
+    tl: null as AbstractMesh | null,
+    tr: null as AbstractMesh | null,
+}
+
 
 let engine: Engine | null = null;
 
@@ -168,7 +195,7 @@ const createPlanet = function (planetData: any, scene: Scene) {
 };
 
 
-const buildCanvas = (canvas: HTMLCanvasElement) => {
+const buildCanvas = async (canvas: HTMLCanvasElement) => {
     if (!canvas) {
         throw new Error('Canvas element not found');
     }
@@ -182,7 +209,7 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
         throw new Error('Engine creation failed');
     }
     // CreateScene function that creates and return the scene
-    const { scene, camera } = createScene(engine, canvas);
+    const { scene, camera } = await createScene(engine, canvas);
     if (!scene || !camera || !engine.scenes[0]) {
         throw new Error('Scene or Camera creation failed');
     }
@@ -230,6 +257,21 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
     });
 
     engine.scenes[0].beforeRender = function () {
+        if (glider.mesh) {
+            // update thruster colors based on parameter
+            if (sysParms.thrustersOn !== glider.thrustersOn) {
+                glider.thrustersOn = sysParms.thrustersOn || false;
+                setThrusters(glider.thrustersOn);
+            }
+            // update glider x,y,z position from last position and speed
+            glider.posX += glider.speedX;
+            glider.posY += glider.speedY;
+            glider.posZ += glider.speedZ;
+/* The above code is setting the position of a mesh object named "glider" using the values of its posX,
+posY, and posZ properties. It is creating a new Vector3 object with these values and assigning it to
+the position property of the glider.mesh object. */
+            glider.mesh.position = new Vector3(glider.posX, glider.posY, glider.posZ);  
+        }
         const camPos = camera.position;
         for (let idx = 0; idx < system.length; idx++) {
             const planet = system[idx];
@@ -322,7 +364,7 @@ const buildCanvas = (canvas: HTMLCanvasElement) => {
     return canvas;
 }
 
-const createScene = function (engine: Engine, canvas: HTMLCanvasElement): { scene: Scene, camera: ArcRotateCamera } {
+const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): Promise<{ scene: Scene, camera: ArcRotateCamera }> {
     // Create a basic BJS Scene object
     var scene = new Scene(engine);
     if (!scene) {
@@ -358,6 +400,13 @@ const createScene = function (engine: Engine, canvas: HTMLCanvasElement): { scen
 
     galacticlight.groundColor = new Color3(0.5, 0.5, 1.0);
 
+    // some direct light for the glider
+    // Directional sunlight
+    const sun = new DirectionalLight("sun", new Vector3(-1, -2, 1), scene);
+    sun.position = new Vector3(10, 20, -10);
+    sun.intensity = 2.0;    
+
+
     // skybox.
     const skybox = MeshBuilder.CreateBox('skybox', {
         size: 1000               // Uniform side length; you could also use width/height/depth
@@ -377,6 +426,8 @@ const createScene = function (engine: Engine, canvas: HTMLCanvasElement): { scen
 
     skyboxMaterial.reflectionTexture.coordinatesMode = Texture.SKYBOX_MODE;
     skybox.material = skyboxMaterial;
+    
+
 
     // Create the objects
     system.forEach(object => {
@@ -390,8 +441,56 @@ const createScene = function (engine: Engine, canvas: HTMLCanvasElement): { scen
     // Create the ground
     createGround(scene);
 
+    await createGlider(scene);
+
+
     return { scene, camera };
 }
+
+const createGlider = async function (scene: Scene) {
+    console.log("Loading glider model...");
+    await AppendSceneAsync("models/glider/space_glider.glb", scene, {
+        onProgress: (ev) => {
+            if (ev.lengthComputable) {
+                console.log(`Loading: ${(ev.loaded / ev.total * 100).toFixed(1)}%`);
+            }
+        },
+    });
+    // Helper to get thruster meshes
+    const gliderMesh = scene.getTransformNodeByName("SpaceGlider");
+    if (!gliderMesh) {
+        throw new Error("Glider transform node not found in loaded model.");
+    }
+    glider.mesh = gliderMesh
+    const TLmesh = scene.getMeshByName("ThrusterLeft");        // same-named mesh node
+    const TRmesh = scene.getMeshByName("ThrusterRight");
+    if (!glider.mesh || !TLmesh || !TRmesh) {
+        throw new Error("Glider mesh not found in loaded model.");
+    }
+    console.log("Glider model loaded.");
+    glider.tl = TLmesh;
+    glider.tr = TRmesh;
+    glider.mesh.position = new Vector3(glider.posX, glider.posY, glider.posZ);
+    glider.mesh.rotation = new Vector3(glider.rotX, glider.rotY, glider.rotZ);
+    glider.mesh.scaling = new Vector3(1.0, 1.0, 1.0);
+}
+
+const setThrusters = (on: boolean) => {
+    const color = on ? glider.thrustOnColor : glider.thrustOffColor;
+    [glider.tl, glider.tr].forEach(m => {
+        if (!m || !m.material) return;
+        const mat: any = m.material;
+        // Works for StandardMaterial, PBRMaterial and other material types exposing emissive properties:
+        if (mat.emissiveColor !== undefined) {
+            mat.emissiveColor = color;
+        }
+        // Boost intensity a bit when on (only for materials that support it)
+        if (mat.emissiveIntensity !== undefined) {
+            mat.emissiveIntensity = on ? 2.0 : 1.0;
+        }
+    });
+};
+
 
 const resizeGame = function () {
     console.log("Resizing game canvas.");
