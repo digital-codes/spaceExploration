@@ -3,7 +3,7 @@ import geopandas as gpd
 
 # Load offline dataset
 # force web version
-forceWeb = False #True
+forceWeb = True
 try:
     if forceWeb:
         raise("forcing web")
