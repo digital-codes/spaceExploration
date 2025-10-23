@@ -92,15 +92,44 @@ const disposeEngine = function () {
 }
 
 const createGround = function (scene: Scene) {
+    const checker = false
     // Create a built-in "ground" shape.
     //const ground = MeshBuilder.CreateGround('ground1', { width: 6, height: 6, subdivisions: 2 }, scene);
     // 4a – Create a fairly large checkerboard ground (size 50 × 50 units)
     const ground = MeshBuilder.CreateGround(
         'checkerGround',
-        { width: 50, height: 50, subdivisions: 2 },
+        { width: 100, height: 60, subdivisions: 2 },
         scene
     );
 
+    if (!checker) {
+        // Simple green material
+        const groundMat = new StandardMaterial("groundMat", scene);
+        groundMat.diffuseColor = new Color3(0.2, 0.2, 0.2);
+        groundMat.specularColor = new Color3(0, 0, 0);
+        try {
+            // Load a PNG texture for the ground (path relative to your served assets)
+            const groundTex = new Texture('img/map/mercator_world_with_capitals_cropped.png', scene, true, false, Texture.TRILINEAR_SAMPLINGMODE,
+                () => { console.log('Ground texture loaded'); },
+                (message, exception) => { console.warn('Ground texture failed to load:', message, exception); }
+            );
+            // Mirror the PNG horizontally (flip along the image's vertical axis)
+            //groundTex.uScale = -1;
+            //groundTex.vScale = -1;
+            //groundTex.uOffset = 1;
+
+            // Option (alternative): rotate the UVs 180° in the UV plane (uncomment if you prefer rotation and your Babylon version supports it)
+            groundTex.uAng = Math.PI;
+            // now the camera looks at japan (east). extends to west along depth (z)
+
+            groundMat.diffuseTexture = groundTex;
+        } catch (err) {
+            console.warn('Error creating ground texture:', err);
+            // fallback: keep simple color material already configured
+        }
+        ground.material = groundMat;
+        return;
+    }
     // 2) Build a checkerboard texture with 10x10 squares (each square = 1 unit)
     const squares = 10;
     const texSize = 1024; // power of 2 for good mipmapping
