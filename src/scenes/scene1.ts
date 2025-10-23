@@ -381,6 +381,28 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
         };
     }
 
+    // test positions 
+    // Argentina -18.1042668809, -10.5421525959
+    // "crop_x_px": 956.87, "crop_y_px": 1521 956.87, 1521
+    // adjust like so: (px - 1500) / 30 for x, and -(py - 904) / 30 for z
+    // russia crop_x_px": 2307.29, "crop_y_px": 538
+    const marker = MeshBuilder.CreateBox("redCubeMarker", { size: 1 }, scene);
+    marker.position = new Vector3((2307.29-1500)/30, .7, -(538-904)/30);
+    const markerMat = new StandardMaterial("redCubeMat", scene);
+    markerMat.diffuseColor = new Color3(1, 0, 0); // red
+    markerMat.specularColor = new Color3(0, 0, 0);
+    marker.material = markerMat;
+
+    const marker2 = MeshBuilder.CreateBox("blueCubeMarker", { size: 1 }, scene);
+    marker2.position = new Vector3((956-1500)/30, .7, -(1521-904)/30);
+    const markerMat2 = new StandardMaterial("blueCubeMat", scene);
+    markerMat2.diffuseColor = new Color3(0, 0, 1); // blue
+    markerMat2.specularColor = new Color3(0, 0, 0);
+    marker2.material = markerMat2;
+    // 
+
+
+
     console.log("Env Texture:", scene.environmentTexture);             // should be a valid environment texture (HDR .env)
     console.log("Tone Mapping Enabled:", scene.imageProcessingConfiguration.toneMappingEnabled); // true if HDR tone mapping active
     // Guard access because scene.getEngine() returns AbstractEngine in types; cast or check before reading isHDR

@@ -1,0 +1,1522 @@
+[
+  {
+    "name": "albanien",
+    "name_en": "Albania",
+    "idx_world_lowres": 138,
+    "name_world_lowres": "Albania",
+    "cnt": 2,
+    "years": "2016,2018",
+    "ids": "642,721",
+    "name_r": "Albania",
+    "center_lon": 20.0324264314,
+    "center_lat": 41.141353306,
+    "size": 52423023240.66128,
+    "idx_world_lowres_r": 138,
+    "center_mercator": [
+      5.5645628976,
+      12.5594798723
+    ],
+    "crop_x_px": 1666.94,
+    "crop_y_px": 825
+  },
+  {
+    "name": "argentinien",
+    "name_en": "Argentina",
+    "idx_world_lowres": 9,
+    "name_world_lowres": "Argentina",
+    "cnt": 10,
+    "years": "1994,2003,2007,2007,2009,2010,2010,2015,2016,2022",
+    "ids": "14,247,369,379,432,440,454,604,633,874",
+    "name_r": "Argentina",
+    "center_lon": -65.1753607711,
+    "center_lat": -35.4468214895,
+    "size": 4328068471105.424,
+    "idx_world_lowres_r": 9,
+    "center_mercator": [
+      -18.1042668809,
+      -10.5421525959
+    ],
+    "crop_x_px": 956.87,
+    "crop_y_px": 1521
+  },
+  {
+    "name": "armenien",
+    "name_en": "Armenia",
+    "idx_world_lowres": 140,
+    "name_world_lowres": "Armenia",
+    "cnt": 1,
+    "years": "2017",
+    "ids": "662",
+    "name_r": "Armenia",
+    "center_lon": 45.000290011,
+    "center_lat": 40.2166076123,
+    "size": 49185530957.38979,
+    "idx_world_lowres_r": 140,
+    "center_mercator": [
+      12.5000805586,
+      12.2207540244
+    ],
+    "crop_x_px": 1875.0,
+    "crop_y_px": 836
+  },
+  {
+    "name": "australien",
+    "name_en": "Australia",
+    "idx_world_lowres": 6,
+    "name_world_lowres": "Australia",
+    "cnt": 31,
+    "years": "1996,1999,2000,2000,2001,2004,2005,2005,2005,2006,2008,2008,2008,2010,2010,2010,2012,2013,2014,2014,2016,2016,2017,2017,2018,2018,2019,2019,2022,2023,2023",
+    "ids": "39,112,145,151,162,274,299,301,304,329,382,384,403,437,439,443,500,547,558,581,630,635,669,681,699,725,744,748,864,888,900",
+    "name_r": "Australia",
+    "center_lon": 134.5027754754,
+    "center_lat": -25.7306547797,
+    "size": 9651736660531.516,
+    "idx_world_lowres_r": 6,
+    "center_mercator": [
+      37.3618820765,
+      -7.4005195574
+    ],
+    "crop_x_px": 2620.86,
+    "crop_y_px": 1426
+  },
+  {
+    "name": "österreich",
+    "name_en": "Austria",
+    "idx_world_lowres": 102,
+    "name_world_lowres": "Austria",
+    "cnt": 10,
+    "years": "2002,2005,2010,2013,2016,2017,2019,2021,2023,2024",
+    "ids": "195,318,453,530,631,659,747,848,911,939",
+    "name_r": "Austria",
+    "center_lon": 14.0761588843,
+    "center_lat": 47.6139487927,
+    "size": 187163876632.93683,
+    "idx_world_lowres_r": 102,
+    "center_mercator": [
+      3.9100441345,
+      15.078891537
+    ],
+    "crop_x_px": 1617.3,
+    "crop_y_px": 750
+  },
+  {
+    "name": "belgien",
+    "name_en": "Belgium",
+    "idx_world_lowres": 132,
+    "name_world_lowres": "Belgium",
+    "cnt": 20,
+    "years": "1998,1999,2001,2002,2004,2005,2006,2006,2006,2008,2009,2015,2017,2019,2020,2021,2024,2024,2024,2024",
+    "ids": "91,118,168,218,262,317,332,333,335,391,425,597,689,756,792,830,920,928,941,966",
+    "name_r": "Belgium",
+    "center_lon": 4.5808341139,
+    "center_lat": 50.652440959,
+    "size": 74856029744.3151,
+    "idx_world_lowres_r": 132,
+    "center_mercator": [
+      1.2724539205,
+      16.3694087903
+    ],
+    "crop_x_px": 1538.17,
+    "crop_y_px": 711
+  },
+  {
+    "name": "bosnien und herzegowina",
+    "name_en": "Bosnia and Herzegovina",
+    "idx_world_lowres": 128,
+    "name_world_lowres": "Bosnia and Herz.",
+    "cnt": 3,
+    "years": "2011,2020,2020",
+    "ids": "472,786,806",
+    "name_r": "Bosnia and Herz.",
+    "center_lon": 17.8168832704,
+    "center_lat": 44.180767763,
+    "size": 98443181642.14653,
+    "idx_world_lowres_r": 128,
+    "center_mercator": [
+      4.9491342418,
+      13.7079397933
+    ],
+    "crop_x_px": 1648.47,
+    "crop_y_px": 791
+  },
+  {
+    "name": "brasilien",
+    "name_en": "Brazil",
+    "idx_world_lowres": 7,
+    "name_world_lowres": "Brazil",
+    "cnt": 19,
+    "years": "2007,2011,2013,2013,2014,2015,2015,2016,2016,2017,2018,2018,2018,2019,2019,2019,2020,2021,2021",
+    "ids": "353,483,536,549,577,584,606,617,624,674,708,723,726,742,763,765,777,815,819",
+    "name_r": "Brazil",
+    "center_lon": -53.0543400358,
+    "center_lat": -10.8067736435,
+    "size": 9059541356694.324,
+    "idx_world_lowres_r": 7,
+    "center_mercator": [
+      -14.7373166766,
+      -3.0198402557
+    ],
+    "crop_x_px": 1057.88,
+    "crop_y_px": 1294
+  },
+  {
+    "name": "kanada",
+    "name_en": "Canada",
+    "idx_world_lowres": 2,
+    "name_world_lowres": "Canada",
+    "cnt": 86,
+    "years": "1994,1994,1996,1997,1997,1998,1998,1999,1999,1999,1999,1999,2000,2000,2001,2001,2001,2001,2001,2002,2003,2003,2003,2003,2003,2003,2004,2004,2004,2005,2005,2005,2006,2006,2006,2007,2007,2007,2008,2008,2008,2008,2009,2009,2009,2010,2011,2011,2011,2011,2012,2012,2013,2013,2014,2014,2014,2014,2014,2014,2015,2015,2015,2017,2017,2017,2017,2017,2017,2017,2018,2019,2019,2020,2020,2020,2022,2023,2023,2023,2024,2024,2024,2024,2024,2024",
+    "ids": "15,18,43,61,67,76,92,104,105,108,119,126,144,157,161,169,178,181,186,191,222,223,226,230,241,242,264,277,290,295,296,307,322,323,338,354,356,373,388,396,399,402,412,427,433,445,460,461,462,467,496,514,540,541,552,560,565,572,575,579,586,591,609,652,668,676,683,685,691,692,736,741,761,783,784,785,853,889,897,909,925,928,938,953,961,964",
+    "name_r": "Canada",
+    "center_lon": -98.1423813721,
+    "center_lat": 61.4690761453,
+    "size": 52166480440472.336,
+    "idx_world_lowres_r": 2,
+    "center_mercator": [
+      -27.2617726034,
+      21.7949618309
+    ],
+    "crop_x_px": 682.15,
+    "crop_y_px": 548
+  },
+  {
+    "name": "chile",
+    "name_en": "Chile",
+    "idx_world_lowres": 24,
+    "name_world_lowres": "Chile",
+    "cnt": 3,
+    "years": "2011,2013,2016",
+    "ids": "469,531,633",
+    "name_r": "Chile",
+    "center_lon": -71.5206439452,
+    "center_lat": -39.0470143099,
+    "size": 1443759990998.3474,
+    "idx_world_lowres_r": 24,
+    "center_mercator": [
+      -19.8668455403,
+      -11.798892675
+    ],
+    "crop_x_px": 903.99,
+    "crop_y_px": 1559
+  },
+  {
+    "name": "china",
+    "name_en": "China",
+    "idx_world_lowres": 5,
+    "name_world_lowres": "China",
+    "cnt": 5,
+    "years": "1998,2002,2012,2020,2024",
+    "ids": "96,214,513,781,926",
+    "name_r": "China",
+    "center_lon": 103.8836123006,
+    "center_lat": 36.5550665319,
+    "size": 14977313743935.98,
+    "idx_world_lowres_r": 5,
+    "center_mercator": [
+      28.8565589724,
+      10.9226877378
+    ],
+    "crop_x_px": 2365.7,
+    "crop_y_px": 875
+  },
+  {
+    "name": "kolumbien",
+    "name_en": "Colombia",
+    "idx_world_lowres": 37,
+    "name_world_lowres": "Colombia",
+    "cnt": 3,
+    "years": "2017,2018,2018",
+    "ids": "694,731,737",
+    "name_r": "Colombia",
+    "center_lon": -73.077732087,
+    "center_lat": 3.9272138627,
+    "size": 1168893124458.318,
+    "idx_world_lowres_r": 37,
+    "center_mercator": [
+      -20.2993700242,
+      1.0917479346
+    ],
+    "crop_x_px": 891.02,
+    "crop_y_px": 1171
+  },
+  {
+    "name": "costa rica",
+    "name_en": "Costa Rica",
+    "idx_world_lowres": 136,
+    "name_world_lowres": "Costa Rica",
+    "cnt": 1,
+    "years": "2018",
+    "ids": "704",
+    "name_r": "Costa Rica",
+    "center_lon": -84.175423096,
+    "center_lat": 9.9656711275,
+    "size": 55852180077.32843,
+    "idx_world_lowres_r": 136,
+    "center_mercator": [
+      -23.3820619711,
+      2.7823064014
+    ],
+    "crop_x_px": 798.54,
+    "crop_y_px": 1120
+  },
+  {
+    "name": "kroatien",
+    "name_en": "Croatia",
+    "idx_world_lowres": 123,
+    "name_world_lowres": "Croatia",
+    "cnt": 3,
+    "years": "2014,2015,2024",
+    "ids": "582,614,947",
+    "name_r": "Croatia",
+    "center_lon": 16.5661897716,
+    "center_lat": 45.0162339959,
+    "size": 115206864055.01999,
+    "idx_world_lowres_r": 123,
+    "center_mercator": [
+      4.601719381,
+      14.0338745281
+    ],
+    "crop_x_px": 1638.05,
+    "crop_y_px": 781
+  },
+  {
+    "name": "tschechische republik",
+    "name_en": "Czech Republic",
+    "idx_world_lowres": 100,
+    "name_world_lowres": "Czechia",
+    "cnt": 5,
+    "years": "2008,2016,2017,2020,2024",
+    "ids": "405,639,673,779,956",
+    "name_r": "Czechia",
+    "center_lon": 15.3345581024,
+    "center_lat": 49.7752452944,
+    "size": 194550148018.61322,
+    "idx_world_lowres_r": 100,
+    "center_mercator": [
+      4.2595994729,
+      15.9886218779
+    ],
+    "crop_x_px": 1627.79,
+    "crop_y_px": 722
+  },
+  {
+    "name": "dänemark",
+    "name_en": "Denmark",
+    "idx_world_lowres": 113,
+    "name_world_lowres": "Denmark",
+    "cnt": 10,
+    "years": "1998,2008,2011,2012,2015,2016,2017,2019,2020,2024",
+    "ids": "77,393,465,502,614,619,693,764,782,922",
+    "name_r": "Denmark",
+    "center_lon": 9.8763729377,
+    "center_lat": 56.0639344618,
+    "size": 136933386914.89925,
+    "idx_world_lowres_r": 113,
+    "center_mercator": [
+      2.7434369271,
+      18.8924531226
+    ],
+    "crop_x_px": 1582.3,
+    "crop_y_px": 635
+  },
+  {
+    "name": "dominikanische republik",
+    "name_en": "Dominican Republic",
+    "idx_world_lowres": 137,
+    "name_world_lowres": "Dominican Rep.",
+    "cnt": 1,
+    "years": "2015",
+    "ids": "604",
+    "name_r": "Dominican Rep.",
+    "center_lon": -70.462358457,
+    "center_lat": 18.884487088,
+    "size": 54081278724.37836,
+    "idx_world_lowres_r": 137,
+    "center_mercator": [
+      -19.5728773492,
+      5.3433311515
+    ],
+    "crop_x_px": 912.81,
+    "crop_y_px": 1043
+  },
+  {
+    "name": "ecuador",
+    "name_en": "Ecuador",
+    "idx_world_lowres": 84,
+    "name_world_lowres": "Ecuador",
+    "cnt": 1,
+    "years": "2017",
+    "ids": "694",
+    "name_r": "Ecuador",
+    "center_lon": -78.3841667461,
+    "center_lat": -1.4547717055,
+    "size": 252736565146.33047,
+    "idx_world_lowres_r": 84,
+    "center_mercator": [
+      -21.7733796517,
+      -0.4041466781
+    ],
+    "crop_x_px": 846.8,
+    "crop_y_px": 1216
+  },
+  {
+    "name": "finnland",
+    "name_en": "Finland",
+    "idx_world_lowres": 21,
+    "name_world_lowres": "Finland",
+    "cnt": 5,
+    "years": "2005,2007,2021,2022,2022",
+    "ids": "294,363,833,866,879",
+    "name_r": "Finland",
+    "center_lon": 26.2117646103,
+    "center_lat": 64.5040940396,
+    "size": 1857055252706.439,
+    "idx_world_lowres_r": 21,
+    "center_mercator": [
+      7.2810457251,
+      23.652999742
+    ],
+    "crop_x_px": 1718.43,
+    "crop_y_px": 492
+  },
+  {
+    "name": "frankreich",
+    "name_en": "France",
+    "idx_world_lowres": 32,
+    "name_world_lowres": "France",
+    "cnt": 90,
+    "years": "1994,1998,1998,1998,1998,1998,1999,1999,1999,1999,1999,2000,2000,2001,2001,2001,2001,2001,2002,2002,2003,2004,2005,2005,2006,2006,2007,2007,2007,2007,2007,2007,2007,2008,2009,2009,2009,2009,2010,2011,2011,2011,2012,2012,2012,2013,2013,2013,2013,2014,2014,2014,2015,2015,2015,2016,2016,2016,2016,2017,2017,2017,2017,2018,2018,2018,2019,2019,2020,2020,2020,2020,2020,2021,2021,2021,2021,2021,2022,2023,2023,2024,2024,2024,2024,2024,2024,2024,2024,2024",
+    "ids": "14,80,85,86,87,91,106,107,116,118,124,141,143,160,167,174,182,185,190,218,254,278,316,317,321,339,357,365,366,369,371,374,376,390,419,424,432,434,457,481,484,485,501,512,517,534,538,539,550,562,566,579,588,608,611,615,632,639,640,657,660,688,697,700,709,726,755,762,780,790,792,797,800,812,814,831,845,847,858,886,892,920,921,922,927,936,948,952,962,963",
+    "name_r": "France",
+    "center_lon": -2.8766966993,
+    "center_lat": 42.4607043266,
+    "size": 1271992255138.3975,
+    "idx_world_lowres_r": 32,
+    "center_mercator": [
+      -0.7990824165,
+      13.0511299389
+    ],
+    "crop_x_px": 1476.03,
+    "crop_y_px": 811
+  },
+  {
+    "name": "georgien",
+    "name_en": "Georgia",
+    "idx_world_lowres": 116,
+    "name_world_lowres": "Georgia",
+    "cnt": 3,
+    "years": "2020,2021,2024",
+    "ids": "775,822,922",
+    "name_r": "Georgia",
+    "center_lon": 43.4815426541,
+    "center_lat": 42.1620150142,
+    "size": 125752101855.9829,
+    "idx_world_lowres_r": 116,
+    "center_mercator": [
+      12.0782062928,
+      12.9389328231
+    ],
+    "crop_x_px": 1862.35,
+    "crop_y_px": 814
+  },
+  {
+    "name": "deutschland",
+    "name_en": "germany",
+    "idx_world_lowres": 44,
+    "name_world_lowres": "Germany",
+    "cnt": 157,
+    "years": "1994,1994,1994,1994,1994,1994,1994,1996,1996,1996,1996,1996,1996,1996,1996,1996,1996,1996,1996,1996,1996,1996,1996,1996,1996,1996,1997,1997,1997,1997,1997,1997,1997,1997,1998,1998,1998,1998,1998,1998,1998,1999,1999,1999,1999,1999,1999,1999,2000,2000,2000,2000,2000,2001,2002,2002,2002,2002,2002,2002,2003,2003,2003,2003,2003,2003,2003,2004,2004,2004,2005,2005,2005,2006,2006,2006,2007,2007,2007,2007,2007,2008,2008,2008,2008,2009,2009,2009,2009,2009,2010,2010,2011,2011,2011,2012,2012,2012,2013,2013,2013,2013,2013,2013,2013,2014,2014,2014,2014,2014,2015,2015,2015,2015,2016,2016,2016,2017,2017,2017,2017,2017,2018,2018,2018,2019,2019,2019,2020,2020,2020,2020,2020,2020,2020,2021,2021,2021,2021,2021,2021,2022,2022,2022,2022,2022,2023,2023,2023,2023,2024,2024,2024,2024,2024,2024,2024",
+    "ids": "0,1,2,3,15,20,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,41,42,44,48,50,52,55,56,57,58,60,63,67,81,82,83,90,93,95,97,109,110,111,114,123,125,127,130,133,137,139,156,183,200,202,212,213,215,221,224,239,240,242,249,252,257,265,272,289,312,313,318,328,342,348,349,355,362,375,377,381,387,400,402,411,417,421,422,423,442,451,474,476,487,497,505,509,522,523,525,526,543,544,545,555,569,570,571,573,588,595,602,607,616,642,648,654,658,660,667,680,726,730,737,739,740,766,774,788,801,803,804,808,810,821,822,824,826,832,847,851,856,860,863,868,883,893,897,916,920,923,929,946,950,955,960",
+    "name_r": "Germany",
+    "center_lon": 10.2884850927,
+    "center_lat": 51.1337226904,
+    "size": 908908538891.8849,
+    "idx_world_lowres_r": 44,
+    "center_mercator": [
+      2.8579125257,
+      16.5813577687
+    ],
+    "crop_x_px": 1585.74,
+    "crop_y_px": 704
+  },
+  {
+    "name": "griechenland",
+    "name_en": "Greece",
+    "idx_world_lowres": 91,
+    "name_world_lowres": "Greece",
+    "cnt": 5,
+    "years": "2011,2014,2017,2018,2018",
+    "ids": "472,580,679,709,734",
+    "name_r": "Greece",
+    "center_lon": 22.7198134471,
+    "center_lat": 39.0667158997,
+    "size": 219575953719.99512,
+    "idx_world_lowres_r": 91,
+    "center_mercator": [
+      6.3110592909,
+      11.8059403453
+    ],
+    "crop_x_px": 1689.33,
+    "crop_y_px": 848
+  },
+  {
+    "name": "guatemala",
+    "name_en": "Guatemala",
+    "idx_world_lowres": 120,
+    "name_world_lowres": "Guatemala",
+    "cnt": 1,
+    "years": "2019",
+    "ids": "762",
+    "name_r": "Guatemala",
+    "center_lon": -90.3694583605,
+    "center_lat": 15.699360612,
+    "size": 118814343542.73718,
+    "idx_world_lowres_r": 120,
+    "center_mercator": [
+      -25.1026273224,
+      4.4165497434
+    ],
+    "crop_x_px": 746.92,
+    "crop_y_px": 1071
+  },
+  {
+    "name": "hongkong",
+    "name_en": "Hong Kong",
+    "idx_world_lowres": 5,
+    "name_world_lowres": "China",
+    "cnt": 8,
+    "years": "2000,2000,2003,2005,2012,2015,2020,2024",
+    "ids": "152,154,245,320,513,603,781,926",
+    "name_r": "China",
+    "center_lon": 103.8836123006,
+    "center_lat": 36.5550665319,
+    "size": 14977313743935.98,
+    "idx_world_lowres_r": 5,
+    "center_mercator": [
+      28.8565589724,
+      10.9226877378
+    ],
+    "crop_x_px": 2365.7,
+    "crop_y_px": 875
+  },
+  {
+    "name": "ungarn",
+    "name_en": "Hungary",
+    "idx_world_lowres": 97,
+    "name_world_lowres": "Hungary",
+    "cnt": 3,
+    "years": "2009,2011,2024",
+    "ids": "430,464,933",
+    "name_r": "Hungary",
+    "center_lon": 19.3576286277,
+    "center_lat": 47.199951172,
+    "size": 200290582073.4362,
+    "idx_world_lowres_r": 97,
+    "center_mercator": [
+      5.3771190632,
+      14.9089706663
+    ],
+    "crop_x_px": 1661.31,
+    "crop_y_px": 755
+  },
+  {
+    "name": "island",
+    "name_en": "iceland",
+    "idx_world_lowres": 60,
+    "name_world_lowres": "Iceland",
+    "cnt": 4,
+    "years": "2008,2009,2010,2020",
+    "ids": "385,434,447,805",
+    "name_r": "Iceland",
+    "center_lon": -18.7610287708,
+    "center_lat": 65.0742763353,
+    "size": 605303300042.6886,
+    "idx_world_lowres_r": 60,
+    "center_mercator": [
+      -5.2113968808,
+      24.0248520601
+    ],
+    "crop_x_px": 1343.66,
+    "crop_y_px": 480
+  },
+  {
+    "name": "indien",
+    "name_en": "India",
+    "idx_world_lowres": 10,
+    "name_world_lowres": "India",
+    "cnt": 3,
+    "years": "2006,2015,2021",
+    "ids": "342,612,838",
+    "name_r": "India",
+    "center_lon": 79.5937037633,
+    "center_lat": 22.9250064074,
+    "size": 3762734394386.3433,
+    "idx_world_lowres_r": 10,
+    "center_mercator": [
+      22.1093621565,
+      6.5451050653
+    ],
+    "crop_x_px": 2163.28,
+    "crop_y_px": 1007
+  },
+  {
+    "name": "indonesien",
+    "name_en": "Indonesia",
+    "idx_world_lowres": 22,
+    "name_world_lowres": "Indonesia",
+    "cnt": 3,
+    "years": "2012,2015,2021",
+    "ids": "491,603,829",
+    "name_r": "Indonesia",
+    "center_lon": 117.4234075623,
+    "center_lat": -2.2217379365,
+    "size": 1840122010678.3928,
+    "idx_world_lowres_r": 22,
+    "center_mercator": [
+      32.6176132117,
+      -0.6173041455
+    ],
+    "crop_x_px": 2478.53,
+    "crop_y_px": 1222
+  },
+  {
+    "name": "iran",
+    "name_en": "Iran",
+    "idx_world_lowres": 17,
+    "name_world_lowres": "Iran",
+    "cnt": 6,
+    "years": "2011,2012,2018,2023,2023,2023",
+    "ids": "485,518,705,882,901,903",
+    "name_r": "Iran",
+    "center_lon": 54.2854514969,
+    "center_lat": 32.5189173176,
+    "size": 2292960835076.378,
+    "idx_world_lowres_r": 17,
+    "center_mercator": [
+      15.0792920825,
+      9.5611214144
+    ],
+    "crop_x_px": 1952.38,
+    "crop_y_px": 916
+  },
+  {
+    "name": "irland",
+    "name_en": "Ireland",
+    "idx_world_lowres": 105,
+    "name_world_lowres": "Ireland",
+    "cnt": 12,
+    "years": "2000,2002,2004,2005,2009,2012,2017,2017,2017,2020,2020,2023",
+    "ids": "142,193,283,315,414,521,663,670,672,779,796,907",
+    "name_r": "Ireland",
+    "center_lon": -8.0102365449,
+    "center_lat": 53.18059121,
+    "size": 162614265483.18552,
+    "idx_world_lowres_r": 105,
+    "center_mercator": [
+      -2.2250657069,
+      17.5083458441
+    ],
+    "crop_x_px": 1433.25,
+    "crop_y_px": 677
+  },
+  {
+    "name": "israel",
+    "name_en": "Israel",
+    "idx_world_lowres": 148,
+    "name_world_lowres": "Israel",
+    "cnt": 22,
+    "years": "2001,2004,2005,2005,2007,2007,2010,2011,2012,2013,2015,2016,2016,2017,2018,2019,2020,2020,2021,2021,2022,2023",
+    "ids": "180,280,302,305,367,368,436,489,511,528,600,634,646,657,730,760,776,778,817,840,849,915",
+    "name_r": "Israel",
+    "center_lon": 35.0038512064,
+    "center_lat": 31.48491939,
+    "size": 31755593013.178604,
+    "idx_world_lowres_r": 148,
+    "center_mercator": [
+      9.7232920018,
+      9.2224205794
+    ],
+    "crop_x_px": 1791.7,
+    "crop_y_px": 926
+  },
+  {
+    "name": "italien",
+    "name_en": "Italy",
+    "idx_world_lowres": 63,
+    "name_world_lowres": "Italy",
+    "cnt": 20,
+    "years": "2001,2004,2007,2008,2008,2009,2012,2014,2015,2016,2018,2020,2021,2021,2022,2022,2022,2023,2023,2023",
+    "ids": "174,285,376,397,409,415,515,568,610,642,716,791,813,841,852,861,881,894,904,906",
+    "name_r": "Italy",
+    "center_lon": 12.1407883722,
+    "center_lat": 42.751183053,
+    "size": 587022007094.8821,
+    "idx_world_lowres_r": 63,
+    "center_mercator": [
+      3.3724412145,
+      13.1607574151
+    ],
+    "crop_x_px": 1601.17,
+    "crop_y_px": 807
+  },
+  {
+    "name": "japan",
+    "name_en": "Japan",
+    "idx_world_lowres": 56,
+    "name_world_lowres": "Japan",
+    "cnt": 3,
+    "years": "1994,2001,2006",
+    "ids": "12,176,337",
+    "name_r": "Japan",
+    "center_lon": 138.0649621327,
+    "center_lat": 37.6631108117,
+    "size": 651423233541.0454,
+    "idx_world_lowres_r": 56,
+    "center_mercator": [
+      38.3513783702,
+      11.3086500032
+    ],
+    "crop_x_px": 2650.54,
+    "crop_y_px": 863
+  },
+  {
+    "name": "kambodscha",
+    "name_en": "Kampuchea",
+    "idx_world_lowres": 101,
+    "name_world_lowres": "Cambodia",
+    "cnt": 1,
+    "years": "2013",
+    "ids": "527",
+    "name_r": "Cambodia",
+    "center_lon": 104.8760853253,
+    "center_lat": 12.6847286294,
+    "size": 192702033274.35587,
+    "idx_world_lowres_r": 101,
+    "center_mercator": [
+      29.1322459237,
+      3.5526770889
+    ],
+    "crop_x_px": 2373.97,
+    "crop_y_px": 1097
+  },
+  {
+    "name": "kasachstan",
+    "name_en": "Kazakhstan",
+    "idx_world_lowres": 8,
+    "name_world_lowres": "Kazakhstan",
+    "cnt": 1,
+    "years": "2022",
+    "ids": "859",
+    "name_r": "Kazakhstan",
+    "center_lon": 67.2846109811,
+    "center_lat": 48.1916607522,
+    "size": 6177084176232.59,
+    "idx_world_lowres_r": 8,
+    "center_mercator": [
+      18.690169717,
+      15.318271329
+    ],
+    "crop_x_px": 2060.71,
+    "crop_y_px": 742
+  },
+  {
+    "name": "kenia",
+    "name_en": "Kenya",
+    "idx_world_lowres": 61,
+    "name_world_lowres": "Kenya",
+    "cnt": 2,
+    "years": "2015,2018",
+    "ids": "601,707",
+    "name_r": "Kenya",
+    "center_lon": 37.7915552867,
+    "center_lat": 0.5959662522,
+    "size": 595731189839.9436,
+    "idx_world_lowres_r": 61,
+    "center_mercator": [
+      10.4976542463,
+      0.1655491664
+    ],
+    "crop_x_px": 1814.93,
+    "crop_y_px": 1199
+  },
+  {
+    "name": "kosovo",
+    "name_en": "Kosovo",
+    "idx_world_lowres": 162,
+    "name_world_lowres": "Kosovo",
+    "cnt": 2,
+    "years": "2016,2018",
+    "ids": "642,721",
+    "name_r": "Kosovo",
+    "center_lon": 20.8953557213,
+    "center_lat": 42.5793671318,
+    "size": 20728016955.39559,
+    "idx_world_lowres_r": 162,
+    "center_mercator": [
+      5.8042654781,
+      13.0958518799
+    ],
+    "crop_x_px": 1674.13,
+    "crop_y_px": 809
+  },
+  {
+    "name": "kurdistan",
+    "name_en": "Kurdistan",
+    "idx_world_lowres": 59,
+    "name_world_lowres": "Iraq",
+    "cnt": 1,
+    "years": "2023",
+    "ids": "885",
+    "name_r": "Iraq",
+    "center_lon": 43.7569109646,
+    "center_lat": 33.0368209637,
+    "size": 624872498340.2339,
+    "idx_world_lowres_r": 59,
+    "center_mercator": [
+      12.1546974902,
+      9.7322288885
+    ],
+    "crop_x_px": 1864.64,
+    "crop_y_px": 911
+  },
+  {
+    "name": "lettland",
+    "name_en": "Latvia",
+    "idx_world_lowres": 94,
+    "name_world_lowres": "Latvia",
+    "cnt": 1,
+    "years": "2012",
+    "ids": "506",
+    "name_r": "Latvia",
+    "center_lon": 24.8332961498,
+    "center_lat": 56.8071751343,
+    "size": 212822978477.07047,
+    "idx_world_lowres_r": 94,
+    "center_mercator": [
+      6.8981378194,
+      19.2658900214
+    ],
+    "crop_x_px": 1706.94,
+    "crop_y_px": 624
+  },
+  {
+    "name": "libanon",
+    "name_en": "Lebanon",
+    "idx_world_lowres": 166,
+    "name_world_lowres": "Lebanon",
+    "cnt": 1,
+    "years": "2011",
+    "ids": "485",
+    "name_r": "Lebanon",
+    "center_lon": 35.87098632,
+    "center_lat": 33.9118272078,
+    "size": 14696172233.01626,
+    "idx_world_lowres_r": 166,
+    "center_mercator": [
+      9.9641628667,
+      10.0236233005
+    ],
+    "crop_x_px": 1798.92,
+    "crop_y_px": 902
+  },
+  {
+    "name": "litauen",
+    "name_en": "Lithuania",
+    "idx_world_lowres": 98,
+    "name_world_lowres": "Lithuania",
+    "cnt": 1,
+    "years": "2015",
+    "ids": "608",
+    "name_r": "Lithuania",
+    "center_lon": 23.8806402758,
+    "center_lat": 55.2843194848,
+    "size": 196365641446.2199,
+    "idx_world_lowres_r": 98,
+    "center_mercator": [
+      6.6335111877,
+      18.5083975715
+    ],
+    "crop_x_px": 1699.01,
+    "crop_y_px": 646
+  },
+  {
+    "name": "luxemburg",
+    "name_en": "Luxembourg",
+    "idx_world_lowres": 175,
+    "name_world_lowres": "Luxembourg",
+    "cnt": 5,
+    "years": "2001,2011,2019,2020,2023",
+    "ids": "167,487,762,792,913",
+    "name_r": "Luxembourg",
+    "center_lon": 5.9652234323,
+    "center_lat": 49.7657050742,
+    "size": 5785822826.500881,
+    "idx_world_lowres_r": 175,
+    "center_mercator": [
+      1.657006509,
+      15.9845186708
+    ],
+    "crop_x_px": 1549.71,
+    "crop_y_px": 722
+  },
+  {
+    "name": "malaysia",
+    "name_en": "Malaysia",
+    "idx_world_lowres": 77,
+    "name_world_lowres": "Malaysia",
+    "cnt": 1,
+    "years": "2005",
+    "ids": "306",
+    "name_r": "Malaysia",
+    "center_lon": 109.6981484486,
+    "center_lat": 3.7255884258,
+    "size": 342161703420.51715,
+    "idx_world_lowres_r": 77,
+    "center_mercator": [
+      30.4717079024,
+      1.035615711
+    ],
+    "crop_x_px": 2414.15,
+    "crop_y_px": 1172
+  },
+  {
+    "name": "mexiko",
+    "name_en": "Mexico",
+    "idx_world_lowres": 14,
+    "name_world_lowres": "Mexico",
+    "cnt": 10,
+    "years": "2004,2008,2009,2015,2015,2017,2024,2024,2024,2024",
+    "ids": "282,406,420,599,604,694,937,942,954,959",
+    "name_r": "Mexico",
+    "center_lon": -102.576349524,
+    "center_lat": 23.9353719022,
+    "size": 2385972705586.88,
+    "idx_world_lowres_r": 14,
+    "center_mercator": [
+      -28.4934304233,
+      6.850988712
+    ],
+    "crop_x_px": 645.2,
+    "crop_y_px": 997
+  },
+  {
+    "name": "namibia",
+    "name_en": "Namibia",
+    "idx_world_lowres": 39,
+    "name_world_lowres": "Namibia",
+    "cnt": 1,
+    "years": "2021",
+    "ids": "820",
+    "name_r": "Namibia",
+    "center_lon": 17.1561681262,
+    "center_lat": -22.0997769317,
+    "size": 969626357925.9778,
+    "idx_world_lowres_r": 39,
+    "center_mercator": [
+      4.7656022573,
+      -6.2969627406
+    ],
+    "crop_x_px": 1642.97,
+    "crop_y_px": 1393
+  },
+  {
+    "name": "niederlande",
+    "name_en": "Netherlands",
+    "idx_world_lowres": 125,
+    "name_world_lowres": "Netherlands",
+    "cnt": 22,
+    "years": "1994,2004,2008,2011,2013,2014,2015,2015,2015,2017,2017,2018,2018,2018,2019,2021,2022,2023,2023,2023,2024,2024",
+    "ids": "9,263,392,487,544,561,605,608,613,651,660,706,714,738,768,844,854,898,902,910,931,941",
+    "name_r": "Netherlands",
+    "center_lon": 5.512217101,
+    "center_lat": 52.2987003744,
+    "size": 106773434034.22356,
+    "idx_world_lowres_r": 125,
+    "center_mercator": [
+      1.5311714169,
+      17.1037123011
+    ],
+    "crop_x_px": 1545.94,
+    "crop_y_px": 689
+  },
+  {
+    "name": "neuseeland",
+    "name_en": "New Zealand",
+    "idx_world_lowres": 65,
+    "name_world_lowres": "New Zealand",
+    "cnt": 3,
+    "years": "1999,2019,2024",
+    "ids": "117,745,958",
+    "name_r": "New Zealand",
+    "center_lon": 172.7019259441,
+    "center_lat": -41.6625787572,
+    "size": 500507190721.6809,
+    "idx_world_lowres_r": 65,
+    "center_mercator": [
+      47.9727572067,
+      -12.752505291
+    ],
+    "crop_x_px": 2939.18,
+    "crop_y_px": 1587
+  },
+  {
+    "name": "norwegen",
+    "name_en": "Norway",
+    "idx_world_lowres": 11,
+    "name_world_lowres": "Norway",
+    "cnt": 17,
+    "years": "1999,2001,2003,2004,2007,2008,2009,2010,2012,2012,2018,2019,2021,2023,2023,2023,2024",
+    "ids": "102,158,235,281,378,394,410,446,498,508,726,764,843,891,910,917,923",
+    "name_r": "Norway",
+    "center_lon": 15.4681199552,
+    "center_lat": 69.1568563098,
+    "size": 3713219632039.1074,
+    "idx_world_lowres_r": 11,
+    "center_mercator": [
+      4.2966999876,
+      26.9486732397
+    ],
+    "crop_x_px": 1628.9,
+    "crop_y_px": 392
+  },
+  {
+    "name": "pakistan",
+    "name_en": "Pakistan",
+    "idx_world_lowres": 36,
+    "name_world_lowres": "Pakistan",
+    "cnt": 2,
+    "years": "2020,2023",
+    "ids": "809,892",
+    "name_r": "Pakistan",
+    "center_lon": 69.4139980632,
+    "center_lat": 29.9734600255,
+    "size": 1174321817092.221,
+    "idx_world_lowres_r": 36,
+    "center_mercator": [
+      19.2816661287,
+      8.7339672511
+    ],
+    "crop_x_px": 2078.45,
+    "crop_y_px": 941
+  },
+  {
+    "name": "paraguay",
+    "name_en": "Paraguay",
+    "idx_world_lowres": 69,
+    "name_world_lowres": "Paraguay",
+    "cnt": 1,
+    "years": "2018",
+    "ids": "726",
+    "name_r": "Paraguay",
+    "center_lon": -58.3873878335,
+    "center_lat": -23.2480419463,
+    "size": 478297957541.5899,
+    "idx_world_lowres_r": 69,
+    "center_mercator": [
+      -16.2187188426,
+      -6.6426492713
+    ],
+    "crop_x_px": 1013.44,
+    "crop_y_px": 1403
+  },
+  {
+    "name": "philippinen",
+    "name_en": "Philippines",
+    "idx_world_lowres": 79,
+    "name_world_lowres": "Philippines",
+    "cnt": 3,
+    "years": "2006,2024,2024",
+    "ids": "345,924,930",
+    "name_r": "Philippines",
+    "center_lon": 122.9026723699,
+    "center_lat": 11.7637993623,
+    "size": 308158260401.38965,
+    "idx_world_lowres_r": 79,
+    "center_mercator": [
+      34.1396312139,
+      3.2909255182
+    ],
+    "crop_x_px": 2524.19,
+    "crop_y_px": 1104
+  },
+  {
+    "name": "polen",
+    "name_en": "Poland",
+    "idx_world_lowres": 48,
+    "name_world_lowres": "Poland",
+    "cnt": 8,
+    "years": "2010,2013,2015,2016,2018,2020,2024,2024",
+    "ids": "444,546,605,639,719,779,923,956",
+    "name_r": "Poland",
+    "center_lon": 19.3110143084,
+    "center_lat": 52.1482602193,
+    "size": 824132321774.833,
+    "idx_world_lowres_r": 48,
+    "center_mercator": [
+      5.3641706412,
+      17.0354946538
+    ],
+    "crop_x_px": 1660.93,
+    "crop_y_px": 691
+  },
+  {
+    "name": "portugal",
+    "name_en": "Portugal",
+    "idx_world_lowres": 107,
+    "name_world_lowres": "Portugal",
+    "cnt": 1,
+    "years": "2008",
+    "ids": "401",
+    "name_r": "Portugal",
+    "center_lon": -8.0557655883,
+    "center_lat": 39.634049775,
+    "size": 157847946260.85342,
+    "idx_world_lowres_r": 107,
+    "center_mercator": [
+      -2.2377126634,
+      12.0097392947
+    ],
+    "crop_x_px": 1432.87,
+    "crop_y_px": 842
+  },
+  {
+    "name": "rumänien",
+    "name_en": "Romania",
+    "idx_world_lowres": 68,
+    "name_world_lowres": "Romania",
+    "cnt": 3,
+    "years": "2016,2019,2023",
+    "ids": "627,771,897",
+    "name_r": "Romania",
+    "center_lon": 24.9432524946,
+    "center_lat": 45.8571010357,
+    "size": 491770753356.3172,
+    "idx_world_lowres_r": 68,
+    "center_mercator": [
+      6.9286812485,
+      14.3667539877
+    ],
+    "crop_x_px": 1707.86,
+    "crop_y_px": 771
+  },
+  {
+    "name": "russland",
+    "name_en": "Russia",
+    "idx_world_lowres": 1,
+    "name_world_lowres": "Russia",
+    "cnt": 3,
+    "years": "1998,2005,2016",
+    "ids": "100,310,645",
+    "name_r": "Russia",
+    "center_lon": 96.875223256,
+    "center_lat": 61.9808407507,
+    "size": 82985719100885.27,
+    "idx_world_lowres_r": 1,
+    "center_mercator": [
+      26.9097842378,
+      22.0950656671
+    ],
+    "crop_x_px": 2307.29,
+    "crop_y_px": 538
+  },
+  {
+    "name": "senegal",
+    "name_en": "Senegal",
+    "idx_world_lowres": 95,
+    "name_world_lowres": "Senegal",
+    "cnt": 1,
+    "years": "2015",
+    "ids": "592",
+    "name_r": "Senegal",
+    "center_lon": -14.5098027859,
+    "center_lat": 14.3541399885,
+    "size": 208444445703.4081,
+    "idx_world_lowres_r": 95,
+    "center_mercator": [
+      -4.0305007739,
+      4.0296370015
+    ],
+    "crop_x_px": 1379.08,
+    "crop_y_px": 1082
+  },
+  {
+    "name": "serbien",
+    "name_en": "Serbia",
+    "idx_world_lowres": 110,
+    "name_world_lowres": "Serbia",
+    "cnt": 1,
+    "years": "2014",
+    "ids": "582",
+    "name_r": "Serbia",
+    "center_lon": 20.8196519264,
+    "center_lat": 44.2330365337,
+    "size": 148881814922.85333,
+    "idx_world_lowres_r": 110,
+    "center_mercator": [
+      5.7832366462,
+      13.7281944882
+    ],
+    "crop_x_px": 1673.5,
+    "crop_y_px": 790
+  },
+  {
+    "name": "singapur",
+    "name_en": "Singapore",
+    "idx_world_lowres": 77,
+    "name_world_lowres": "Malaysia",
+    "cnt": 2,
+    "years": "2007,201",
+    "ids": "359,438",
+    "name_r": "Malaysia",
+    "center_lon": 109.6981484486,
+    "center_lat": 3.7255884258,
+    "size": 342161703420.51715,
+    "idx_world_lowres_r": 77,
+    "center_mercator": [
+      30.4717079024,
+      1.035615711
+    ],
+    "crop_x_px": 2414.15,
+    "crop_y_px": 1172
+  },
+  {
+    "name": "slowakei",
+    "name_en": "Slovakia",
+    "idx_world_lowres": 124,
+    "name_world_lowres": "Slovakia",
+    "cnt": 2,
+    "years": "2016,202",
+    "ids": "639,779",
+    "name_r": "Slovakia",
+    "center_lon": 19.5076571474,
+    "center_lat": 48.7267113517,
+    "size": 108092842216.99748,
+    "idx_world_lowres_r": 124,
+    "center_mercator": [
+      5.4187936521,
+      15.5423930554
+    ],
+    "crop_x_px": 1662.56,
+    "crop_y_px": 736
+  },
+  {
+    "name": "slovenien",
+    "name_en": "Slovenia",
+    "idx_world_lowres": 144,
+    "name_world_lowres": "Slovenia",
+    "cnt": 1,
+    "years": "2015",
+    "ids": "614",
+    "name_r": "Slovenia",
+    "center_lon": 14.9381523208,
+    "center_lat": 46.125422059,
+    "size": 39788543010.03265,
+    "idx_world_lowres_r": 144,
+    "center_mercator": [
+      4.1494867558,
+      14.4740327108
+    ],
+    "crop_x_px": 1624.48,
+    "crop_y_px": 768
+  },
+  {
+    "name": "südafrika",
+    "name_en": "South Africa",
+    "idx_world_lowres": 23,
+    "name_world_lowres": "South Africa",
+    "cnt": 6,
+    "years": "2005,2009,2012,2017,2019,2023",
+    "ids": "293,429,517,660,746,897",
+    "name_r": "South Africa",
+    "center_lon": 25.0480138799,
+    "center_lat": -28.94703326,
+    "size": 1599613746385.926,
+    "idx_world_lowres_r": 23,
+    "center_mercator": [
+      6.9577816333,
+      -8.4065000095
+    ],
+    "crop_x_px": 1708.73,
+    "crop_y_px": 1457
+  },
+  {
+    "name": "südkorea",
+    "name_en": "South Korea",
+    "idx_world_lowres": 109,
+    "name_world_lowres": "South Korea",
+    "cnt": 2,
+    "years": "2003,2016",
+    "ids": "231,641",
+    "name_r": "South Korea",
+    "center_lon": 127.8213171283,
+    "center_lat": 36.4275986042,
+    "size": 153372586390.9951,
+    "idx_world_lowres_r": 109,
+    "center_mercator": [
+      35.5059214245,
+      10.8786453068
+    ],
+    "crop_x_px": 2565.18,
+    "crop_y_px": 876
+  },
+  {
+    "name": "spanien",
+    "name_en": "Spain",
+    "idx_world_lowres": 46,
+    "name_world_lowres": "Spain",
+    "cnt": 58,
+    "years": "1997,1998,2000,2001,2002,2002,2002,2003,2003,2003,2003,2003,2004,2004,2005,2006,2006,2006,2007,2007,2007,2007,2008,2009,2010,2010,2012,2013,2013,2014,2014,2014,2015,2015,2016,2016,2016,2017,2017,2017,2018,2018,2019,2019,2020,2020,2021,2021,2021,2022,2022,2022,2022,2023,2023,2023,2024,2024",
+    "ids": "71,95,140,173,208,209,217,246,248,250,251,257,273,291,316,325,326,344,350,352,358,361,408,432,435,458,493,529,532,551,553,569,583,590,621,623,629,656,684,686,728,733,750,767,787,789,836,837,846,850,857,867,873,890,912,918,932,957",
+    "name_r": "Spain",
+    "center_lon": -3.6170206024,
+    "center_lat": 40.3486561062,
+    "size": 867374859207.2775,
+    "idx_world_lowres_r": 46,
+    "center_mercator": [
+      -1.0047279451,
+      12.2688361725
+    ],
+    "crop_x_px": 1469.86,
+    "crop_y_px": 834
+  },
+  {
+    "name": "sri lanka",
+    "name_en": "Sri Lanka",
+    "idx_world_lowres": 134,
+    "name_world_lowres": "Sri Lanka",
+    "cnt": 1,
+    "years": "2003",
+    "ids": "243",
+    "name_r": "Sri Lanka",
+    "center_lon": 80.6672357493,
+    "center_lat": 7.7005344172,
+    "size": 67010379744.276695,
+    "idx_world_lowres_r": 134,
+    "center_mercator": [
+      22.4075654859,
+      2.1455062415
+    ],
+    "crop_x_px": 2172.23,
+    "crop_y_px": 1139
+  },
+  {
+    "name": "sudan",
+    "name_en": "Sudan",
+    "idx_world_lowres": 20,
+    "name_world_lowres": "Sudan",
+    "cnt": 1,
+    "years": "2019",
+    "ids": "764",
+    "name_r": "Sudan",
+    "center_lon": 29.8626040123,
+    "center_lat": 15.9905850031,
+    "size": 2020863330397.664,
+    "idx_world_lowres_r": 20,
+    "center_mercator": [
+      8.2951677812,
+      4.5006406278
+    ],
+    "crop_x_px": 1748.86,
+    "crop_y_px": 1068
+  },
+  {
+    "name": "schweden",
+    "name_en": "Sweden",
+    "idx_world_lowres": 18,
+    "name_world_lowres": "Sweden",
+    "cnt": 30,
+    "years": "2005,2005,2006,2006,2008,2010,2010,2010,2010,2011,2012,2012,2013,2013,2013,2014,2015,2016,2016,2016,2016,2020,2021,2021,2022,2022,2022,2023,2023,2024",
+    "ids": "297,308,324,330,395,444,448,452,455,477,499,519,524,533,537,563,596,620,622,638,649,775,833,842,862,870,880,891,910,922",
+    "name_r": "Sweden",
+    "center_lon": 16.5962658468,
+    "center_lat": 62.8114849681,
+    "size": 2190160131693.9053,
+    "idx_world_lowres_r": 18,
+    "center_mercator": [
+      4.6100738463,
+      22.5930663756
+    ],
+    "crop_x_px": 1638.3,
+    "crop_y_px": 523
+  },
+  {
+    "name": "schweiz",
+    "name_en": "Switzerland",
+    "idx_world_lowres": 127,
+    "name_world_lowres": "Switzerland",
+    "cnt": 28,
+    "years": "1994,1998,2001,2002,2003,2004,2005,2005,2007,2008,2009,2009,2011,2011,2012,2012,2012,2012,2014,2014,2014,2016,2018,2018,2018,2021,2024,2024",
+    "ids": "21,75,165,215,234,271,300,311,368,398,413,418,471,475,490,494,503,504,556,567,578,642,702,717,718,825,927,949",
+    "name_r": "Switzerland",
+    "center_lon": 8.1183006134,
+    "center_lat": 46.7917376837,
+    "size": 98480030019.82132,
+    "idx_world_lowres_r": 127,
+    "center_mercator": [
+      2.2550835037,
+      14.742717175
+    ],
+    "crop_x_px": 1567.65,
+    "crop_y_px": 760
+  },
+  {
+    "name": "taiwan",
+    "name_en": "Taiwan",
+    "idx_world_lowres": 143,
+    "name_world_lowres": "Taiwan",
+    "cnt": 5,
+    "years": "2008,2010,2013,2018,2023",
+    "ids": "407,452,548,735,914",
+    "name_r": "Taiwan",
+    "center_lon": 120.9748007375,
+    "center_lat": 23.7409649798,
+    "size": 41192880111.63743,
+    "idx_world_lowres_r": 143,
+    "center_mercator": [
+      33.604111316,
+      6.7919502167
+    ],
+    "crop_x_px": 2508.12,
+    "crop_y_px": 999
+  },
+  {
+    "name": "thailand",
+    "name_en": "Thailand",
+    "idx_world_lowres": 64,
+    "name_world_lowres": "Thailand",
+    "cnt": 4,
+    "years": "2001,2003,2004,2015",
+    "ids": "179,255,292,603",
+    "name_r": "Thailand",
+    "center_lon": 101.0061335463,
+    "center_lat": 15.0169749914,
+    "size": 551991083650.5754,
+    "idx_world_lowres_r": 64,
+    "center_mercator": [
+      28.0572593184,
+      4.2199770932
+    ],
+    "crop_x_px": 2341.72,
+    "crop_y_px": 1076
+  },
+  {
+    "name": "türkei",
+    "name_en": "Turkey",
+    "idx_world_lowres": 29,
+    "name_world_lowres": "Turkey",
+    "cnt": 4,
+    "years": "2000,2015,2019,2024",
+    "ids": "138,585,757,922",
+    "name_r": "Turkey",
+    "center_lon": 35.1169001509,
+    "center_lat": 39.0683719406,
+    "size": 1328237815317.8938,
+    "idx_world_lowres_r": 29,
+    "center_mercator": [
+      9.7546944864,
+      11.8065328353
+    ],
+    "crop_x_px": 1792.64,
+    "crop_y_px": 848
+  },
+  {
+    "name": "uganda",
+    "name_en": "Uganda",
+    "idx_world_lowres": 88,
+    "name_world_lowres": "Uganda",
+    "cnt": 1,
+    "years": "2010",
+    "ids": "448",
+    "name_r": "Uganda",
+    "center_lon": 32.35755032,
+    "center_lat": 1.2954855035,
+    "size": 247686835060.55716,
+    "idx_world_lowres_r": 88,
+    "center_mercator": [
+      8.9882084222,
+      0.3598877501
+    ],
+    "crop_x_px": 1769.65,
+    "crop_y_px": 1193
+  },
+  {
+    "name": "uk",
+    "name_en": "UK",
+    "idx_world_lowres": 53,
+    "name_world_lowres": "United Kingdom",
+    "cnt": 90,
+    "years": "1994,1994,1994,1994,1994,1996,1996,1997,1997,1997,1997,1997,1997,1997,1998,1998,1999,1999,1999,2000,2000,2001,2001,2001,2001,2002,2002,2002,2003,2003,2003,2003,2003,2003,2004,2005,2005,2006,2006,2006,2007,2007,2008,2008,2008,2009,2010,2011,2011,2011,2012,2012,2013,2014,2014,2016,2016,2016,2016,2016,2017,2017,2017,2017,2017,2017,2018,2018,2018,2019,2019,2019,2020,2020,2021,2021,2021,2021,2021,2022,2022,2023,2023,2023,2024,2024,2024,2024,2024,2024",
+    "ids": "5,7,8,13,19,44,51,53,64,65,66,70,72,73,78,79,115,118,122,150,155,159,163,172,184,203,220,221,225,232,240,253,258,259,275,294,315,327,334,347,360,372,386,389,404,429,449,466,479,482,516,521,535,569,576,618,625,628,630,646,653,664,675,678,690,695,711,720,727,743,758,759,793,795,818,828,834,835,839,855,875,884,896,898,934,935,944,945,951,965",
+    "name_r": "United Kingdom",
+    "center_lon": -2.8531353952,
+    "center_lat": 53.9147734805,
+    "size": 722380813952.4912,
+    "idx_world_lowres_r": 53,
+    "center_mercator": [
+      -0.7925376098,
+      17.8516005671
+    ],
+    "crop_x_px": 1476.22,
+    "crop_y_px": 666
+  },
+  {
+    "name": "uruguay",
+    "name_en": "Uruguay",
+    "idx_world_lowres": 85,
+    "name_world_lowres": "Uruguay",
+    "cnt": 2,
+    "years": "2011,2018",
+    "ids": "478,726",
+    "name_r": "Uruguay",
+    "center_lon": -56.0032786665,
+    "center_lat": -32.7809043652,
+    "size": 251046644266.49185,
+    "idx_world_lowres_r": 85,
+    "center_mercator": [
+      -15.5564662962,
+      -9.6475534647
+    ],
+    "crop_x_px": 1033.31,
+    "crop_y_px": 1494
+  },
+  {
+    "name": "usa",
+    "name_en": "USA",
+    "idx_world_lowres": 4,
+    "name_world_lowres": "United States of America",
+    "cnt": 219,
+    "years": "1994,1994,1994,1994,1994,1994,1994,1994,1996,1996,1996,1996,1996,1997,1997,1997,1997,1997,1997,1997,1997,1998,1998,1998,1998,1998,1998,1998,1998,1998,1998,1999,1999,1999,1999,1999,1999,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2000,2001,2001,2001,2001,2001,2001,2001,2001,2001,2001,2002,2002,2002,2002,2002,2002,2002,2002,2002,2002,2002,2002,2002,2002,2002,2002,2003,2003,2003,2003,2003,2003,2003,2003,2003,2003,2003,2004,2004,2004,2004,2004,2004,2004,2004,2004,2004,2004,2004,2004,2005,2005,2005,2005,2005,2006,2006,2006,2006,2006,2006,2007,2007,2007,2007,2007,2008,2008,2009,2009,2009,2009,2010,2010,2010,2011,2011,2011,2011,2011,2011,2011,2011,2011,2012,2012,2012,2012,2012,2012,2013,2013,2014,2014,2014,2014,2014,2015,2015,2015,2015,2015,2015,2015,2016,2016,2016,2016,2016,2016,2016,2017,2017,2017,2017,2017,2017,2017,2017,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2018,2019,2019,2019,2019,2019,2019,2019,2019,2019,2020,2020,2020,2020,2020,2020,2021,2021,2021,2021,2022,2022,2022,2022,2022,2022,2022,2022,2023,2023,2023,2023,2023,2023,2023,2023,2023,2023,2024,2024,2024,2024",
+    "ids": "4,6,10,11,16,17,22,23,40,44,45,46,47,54,59,62,65,66,67,68,69,74,78,84,88,89,93,94,98,99,101,103,113,120,121,128,129,131,132,134,135,136,137,146,147,148,149,153,164,166,170,171,175,177,180,187,188,189,192,194,196,197,198,199,201,204,205,206,207,210,211,215,216,219,227,228,229,233,236,237,238,240,242,244,256,260,261,266,267,268,269,270,276,279,284,286,287,288,298,303,309,314,319,331,336,340,341,343,346,351,354,364,370,380,383,390,416,426,428,431,441,450,456,459,463,468,470,473,480,485,486,488,492,495,507,510,514,520,531,542,554,557,559,564,574,587,589,593,594,598,603,611,626,636,637,643,644,647,650,655,661,665,677,682,687,692,696,698,701,703,710,712,713,715,722,724,729,732,749,751,752,753,754,769,770,772,773,780,794,798,799,802,807,811,816,823,827,852,865,869,871,872,876,877,878,887,892,895,897,899,905,908,909,914,919,940,943,961,964",
+    "name_r": "United States of America",
+    "center_lon": -112.5994359115,
+    "center_lat": 45.7056280022,
+    "size": 21862279580369.414,
+    "idx_world_lowres_r": 4,
+    "center_mercator": [
+      -31.2776210865,
+      14.3064213423
+    ],
+    "crop_x_px": 561.67,
+    "crop_y_px": 773
+  },
+  {
+    "name": "venezuela",
+    "name_en": "Venezuela",
+    "idx_world_lowres": 43,
+    "name_world_lowres": "Venezuela",
+    "cnt": 1,
+    "years": "1999",
+    "ids": "118",
+    "name_r": "Venezuela",
+    "center_lon": -66.1638272783,
+    "center_lat": 7.1621322676,
+    "size": 930603186204.3546,
+    "idx_world_lowres_r": 43,
+    "center_mercator": [
+      -18.3788409106,
+      1.9946826894
+    ],
+    "crop_x_px": 948.63,
+    "crop_y_px": 1143
+  }
+]
