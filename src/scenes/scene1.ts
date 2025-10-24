@@ -2,8 +2,8 @@ import {
     Scene, Engine, HemisphericLight, MeshBuilder,
     Mesh, AbstractMesh, Vector3, Color3, Color4, StandardMaterial,
     Texture, CubeTexture, PointLight, GlowLayer,
-    DynamicTexture, Frustum,
-    ArcRotateCamera, PBRMaterial,
+    DynamicTexture, Frustum, FreeCamera,
+    ArcRotateCamera, PBRMaterial, FlyCamera,
     TransformNode, DirectionalLight,
     type Nullable
 } from '@babylonjs/core';
@@ -41,7 +41,7 @@ const sysParms: SceneParams = {
     gravity: 1.0,
     buoyance: 1.0,
     cluster: 1.0,
-    camMode: 'default', // other options: 'arcRotate', 'free', 'follow'
+    camMode: 'arcRotate', // other options: default, 'arcRotate', 'free', 'follow', 'fly'
     thrustersOn: false,
 }
 
@@ -503,29 +503,47 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
     return canvas;
 }
 
-const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): Promise<{ scene: Scene, camera: ArcRotateCamera }> {
+const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): Promise<{ scene: Scene, camera: FreeCamera | ArcRotateCamera | FlyCamera }> {
     // Create a basic BJS Scene object
     var scene = new Scene(engine);
     if (!scene) {
         throw new Error('Scene creation failed');
     }
     // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
-    var camera = new ArcRotateCamera('camera1', -1.6, 1.2, 50, Vector3.Zero(), scene);
+    var camera: ArcRotateCamera | FlyCamera;
+    if (sysParms.camMode === 'arcRotate') {
+        camera = new ArcRotateCamera('camera1', -1.6, 1.2, 50, Vector3.Zero(), scene);
+    } else if (sysParms.camMode === 'fly') {
+        camera = new FlyCamera('camera1', new Vector3(0, 5, -10), scene);
+    } else {
+        // default to fly camera
+        camera = new ArcRotateCamera('camera1', -1.6, 1.2, 50, Vector3.Zero(), scene);
+    }
     if (!camera) {
         throw new Error('Camera creation failed');
     }
     // Target the camera to scene origin
     camera.setTarget(Vector3.Zero());
     // Attach the camera to the canvas
-    camera.attachControl(canvas, false);
 
-    // --- Smoothness tweaks ---
-    camera.wheelPrecision = 100;                // 🟢 smaller = faster zoom; larger = slower
-    camera.wheelDeltaPercentage = 0.01;         // 🟢 smooth zoom with percentage-based delta
-    camera.inertia = 0.9;                       // 🟢 smoothing after movement (0 = immediate)
-    camera.panningInertia = 0.9;                // 🟢 same for panning
-    camera.lowerRadiusLimit = 2;                // optional min zoom distance
-    camera.upperRadiusLimit = 100;              // optional max zoom distance
+    if (camera instanceof FlyCamera) {
+        camera.speed = .1;
+        camera.inertia = 0.9;
+        camera.angularSensibility = 5000;
+        camera.attachControl(true);
+        camera.applyGravity = false;
+        camera.checkCollisions = false;
+
+    } else {
+        camera.attachControl(canvas, true);
+        // --- Smoothness tweaks ---
+        camera.wheelPrecision = 100;                // 🟢 smaller = faster zoom; larger = slower
+        camera.wheelDeltaPercentage = 0.01;         // 🟢 smooth zoom with percentage-based delta
+        camera.inertia = 0.9;                       // 🟢 smoothing after movement (0 = immediate)
+        camera.panningInertia = 0.9;                // 🟢 same for panning
+        camera.lowerRadiusLimit = 2;                // optional min zoom distance
+        camera.upperRadiusLimit = 100;              // optional max zoom distance
+    }
 
     /*
     scene.createDefaultEnvironment({
