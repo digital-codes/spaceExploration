@@ -1,9 +1,12 @@
+import sys
 import numpy as np
 from dataclasses import dataclass, field
 import plotly.graph_objects as go
 import json 
 import random 
 import pandas as pd
+import concurrent.futures
+
 # ----------------------------
 # Model configuration
 # ----------------------------
@@ -51,7 +54,7 @@ df = pd.read_json("mcMatch_full.json")
 
 bodies = []
 # iterate over df and create Body instances
-for i, row in df[:10].iterrows():
+for i, row in df[:100].iterrows():
     att = row["attractors"] 
     body = Body(i=i, a=row["a"], b=row["b"], c=row["c"], d=row["d"], 
         attractors=att, pos=np.array([att[0]["x"], att[0]["z"], row["b"]], dtype=float), 
@@ -61,9 +64,15 @@ for i, row in df[:10].iterrows():
 # Initial positions (random)
 N = len(bodies)
 
-clusters = df.c.to_list()
+#clusters = df.c.to_list()
 diam     = df.d.to_list()
 
+# clusters are groups of objects with same c value
+clusters = {}
+for i, c in enumerate(clusters):
+    if c not in clusters:
+        clusters[c] = []
+    clusters[c].append(bodies[i])
 
 # ----------------------------
 # Force computation
@@ -79,48 +88,90 @@ def compute_forces():
 
     # --- 1) Attractor forces (x/z plane only) ---
     # f_vec = w * GLOBAL_ATTRACTOR_K * (attractor_position - object_position)_xz
-    for b in bodies:
+
+    def _body_attractor_force(b):
         p = b.pos
+        total = np.zeros(3, dtype=float)
         for att in b.attractors:
             att_pos = to_vec(att["x"], att["z"])
-            delta_xz = (att_pos - p) * np.array([1, 0, 1], dtype=float)  # zero out y
-            F[b.i] += att["w"] * GLOBAL_ATTRACTOR_K * delta_xz
+            delta_xz = (att_pos - p) * np.array([1, 0, 1], dtype=float)
+            total += att["w"] * GLOBAL_ATTRACTOR_K * delta_xz
+        return b.i, total
+
+    # Parallelize per-body attractor accumulation using threads (numpy releases GIL on heavy ops)
+    max_workers = min(32, max(1, len(bodies)))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
+        for idx, vec in ex.map(_body_attractor_force, bodies):
+            F[idx] += vec
 
     # --- 2) Intra-cluster pairwise attraction on x/z ---
     # f_vec = GLOBAL_CLUSTER_K * (c_i + c_j) * (p_j - p_i)_xz
-    for i in range(N):
-        for j in range(i+1, N):
-            if bodies[i].c == bodies[j].c:
-                delta = bodies[j].pos - bodies[i].pos
+    # check all pairs in same cluster
+    def _cluster_forces(cluster):
+        """Compute pairwise intra-cluster x/z attraction forces for one cluster."""
+        res = []
+        L = len(cluster)
+        for i in range(L):
+            for j in range(i + 1, L):
+                bi = cluster[i]
+                bj = cluster[j]
+                delta = bj.pos - bi.pos
                 delta_xz = delta * np.array([1, 0, 1], dtype=float)
-                strength = GLOBAL_CLUSTER_K * (bodies[i].c + bodies[j].c)
-                F[i] +=  strength * delta_xz
-                F[j] += -strength * delta_xz  # equal & opposite
+                strength = GLOBAL_CLUSTER_K * (bi.c + bj.c)
+                f = strength * delta_xz
+                res.append((bi.i, f))
+                res.append((bj.i, -f))
+        return res
 
+    max_workers = min(32, max(1, len(bodies)))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
+        # map over clusters in parallel, then accumulate results in the main thread
+        for pair_list in ex.map(_cluster_forces, list(clusters.values())):
+            for idx, vec in pair_list:
+                F[idx] += vec
+                
     # --- 3) Pairwise repulsion in full 3D ---
-    # f_mag = GLOBAL_REPULSIVE_K / (dist - 1.5 * (d_i + d_j)); direction = away from the other body
-    for i in range(N):
-        for j in range(i+1, N):
-            rij = bodies[i].pos - bodies[j].pos
+    # Parallelized pairwise repulsion in full 3D (compute per-body against all others)
+    # f_mag = GLOBAL_REPULSIVE_K / (dist - 0.7 * (d_i + d_j)); direction = away from the other body
+    def _repulse_body(b):
+        total = np.zeros(3, dtype=float)
+        for bj in bodies:
+            if bj.i == b.i:
+                continue
+            rij = b.pos - bj.pos
             dist = norm(rij)
-            # Avoid divide by zero; also handle very small denominator to keep things finite
-            denom = max(EPS, dist - .7 * (bodies[i].d + bodies[j].d))
+            denom = max(EPS, dist - 0.7 * (b.d + bj.d))
             mag = GLOBAL_REPULSIVE_K / denom
-            # Direction for i is away from j
             dir_ij = rij / max(dist, EPS)
-            f_vec = mag * dir_ij
-            F[i] += f_vec
-            F[j] -= f_vec  # equal & opposite
+            total += mag * dir_ij
+        return b.i, total
 
+    max_workers = min(32, max(1, len(bodies)))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
+        for idx, vec in ex.map(_repulse_body, bodies):
+            F[idx] += vec
+            
     # --- 4) Gravity-like toward y=0 (negative y only) ---
     # f_y = -GLOBAL_GRAVITY_K * a_i
-    for b in bodies:
-        F[b.i][1] += -GLOBAL_GRAVITY_K * (10 + b.a) * b.pos[1] if b.pos[1] >= 0 else 10000.0
+    def _gravity_body(b):
+        val = -GLOBAL_GRAVITY_K * (10 + b.a) * b.pos[1] if b.pos[1] >= 0 else 10000.0
+        return b.i, np.array([0.0, val, 0.0], dtype=float)
+
+    max_workers = min(32, max(1, len(bodies)))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
+        for idx, vec in ex.map(_gravity_body, bodies):
+            F[idx] += vec
 
     # --- 5) Buoyancy-like opposite (positive y only) ---
     # f_y += +GLOBAL_GRAVITY_K * b_i
-    for b in bodies:
-        F[b.i][1] += +GLOBAL_BUOYANCY_K * (10 + b.b) if b.pos[1] >= 0 else 10000.0
+    def _buoyancy_body(b):
+        val = GLOBAL_BUOYANCY_K * (10 + b.b) if b.pos[1] >= 0 else 10000.0
+        return b.i, np.array([0.0, val, 0.0], dtype=float)
+
+    max_workers = min(32, max(1, len(bodies)))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
+        for idx, vec in ex.map(_buoyancy_body, bodies):
+            F[idx] += vec
 
     return F
 
@@ -130,6 +181,8 @@ def compute_forces():
 
 converged = False
 for step in range(1, MAX_STEPS + 1):
+    if step % 10 == 0:
+        print(f"Step {step:4d}...", end="\r")
     forces = compute_forces()
     max_force = np.max(np.linalg.norm(forces, axis=1))
 
@@ -141,9 +194,17 @@ for step in range(1, MAX_STEPS + 1):
         break
 
     # Integrate (unit mass)
-    for b in bodies:
-        b.vel = DAMPING * b.vel + DT * forces[b.i]
-        b.pos = b.pos + DT * b.vel
+    # Parallelized integration (damped Euler) per body
+    def _integrate_body(b):
+        new_vel = DAMPING * b.vel + DT * forces[b.i]
+        new_pos = b.pos + DT * new_vel
+        return b.i, new_vel, new_pos
+
+    max_workers = min(32, max(1, len(bodies)))
+    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
+        for idx, new_vel, new_pos in ex.map(_integrate_body, bodies):
+            bodies[idx].vel = new_vel
+            bodies[idx].pos = new_pos
 
 # ----------------------------
 # Results
@@ -151,18 +212,9 @@ for step in range(1, MAX_STEPS + 1):
 
 np.set_printoptions(precision=4, suppress=True)
 
-print("Final positions (x, y, z):")
-for i in range(N):
-    print(f"  Obj {i+1}: {bodies[i].pos}")
-
-print("\nProperties:")
-for i in range(N):
-    print(f"  Obj {i+1}: a={bodies[i].a:.3f}, b={bodies[i].b:.3f}, c={int(bodies[i].c)}, diameter={bodies[i].d:.3f}")
-
-print("\nAttractors (per object, on x/z plane):")
-for i in range(N):
-    A = [{"x":att['x'], "z":att['z'], "w":att['w']} for att in bodies[i].attractors]
-    print(f"  Obj {i+1}: {A}")
+#print("Final positions (x, y, z):")
+#for i in range(N):
+#    print(f"  Obj {i+1}: {bodies[i].pos}")
 
 
 objects_json = []
@@ -180,6 +232,7 @@ for i, b in enumerate(bodies):
         "parm_a": float(b.a),
         "parm_b": float(b.b),
         "parm_c": float(b.c),
+        "diameter": float(b.d),
         "rotation": {
             "speed": random.uniform(0, .1),
             "angle": random.uniform(0,6.2),
@@ -198,7 +251,7 @@ for i, b in enumerate(bodies):
 with open("objects.json", "w") as f:
     json.dump(objects_json, f, indent=4)
 
-
+sys.exit()
 
 # ----------------------------
 # Visualization with Plotly

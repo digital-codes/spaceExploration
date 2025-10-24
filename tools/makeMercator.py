@@ -154,6 +154,7 @@ for item in centers:
         continue
     item["crop_x_px"] = round(x_to_px(x), 2)
     item["crop_y_px"] = round(y_to_px(y) - top_px, 2)
+    item["center_mercator_cropped"] = [x, y - ((CROP_Y_TOP + CROP_Y_BOTTOM) / 2.0)]
 with open(CENTERS_CROP, "w", encoding="utf-8") as f:
     json.dump(centers, f, ensure_ascii=False, indent=2) 
 
