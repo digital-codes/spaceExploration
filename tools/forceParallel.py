@@ -94,6 +94,9 @@ def compute_forces(pos, rcut, attr_pos, attr_k):
                 forces[i,1] += -ky * (py - ay)
             if kz != 0.0:
                 forces[i,2] += -kz * (pz - az)
+        if py < .75:  # diameter 1
+            # ground plane repulsion
+            forces[i,1] += 10 * (0.75 - py)  # push up
 
     return forces
 
@@ -147,7 +150,7 @@ if __name__ == "__main__":
     report_every = 100 # log frequency
     force_threshold = 10 # 1e-2  # stop if total residual force < this
 
-    df = pd.read_json("mcMatch_full.json")[:100]
+    df = pd.read_json("mcMatch_full.json") [:300]
     N = len(df.index)
 
     # initialize positions and attractors
@@ -252,6 +255,9 @@ if __name__ == "__main__":
         print("\nKeyboardInterrupt received — stopping simulation...")
         _stop_flag["stop"] = True   
 
+    finally:
+        # restore original SIGINT handler
+        signal.signal(signal.SIGINT, _orig_sigint)
 
 
 
@@ -277,9 +283,9 @@ if __name__ == "__main__":
             "emissive": False,
             "map": None,
             "img": "img/textures/poster.png",
-            "xpos": float(pos[i][0]),
-            "ypos": float(pos[i][1]),
-            "zpos": float(pos[i][2]),
+            "xpos": float(best_pos[i][0]),
+            "ypos": float(best_pos[i][1]),
+            "zpos": float(best_pos[i][2]),
             "parm_a": float(attr_k[i][A-3][1]),
             "parm_b": float(attr_pos[i][A-2][1]),
             "parm_c": float(attr_k[i][-1][0]),

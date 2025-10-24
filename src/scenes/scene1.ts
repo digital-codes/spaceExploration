@@ -128,6 +128,20 @@ const createGround = function (scene: Scene) {
             // fallback: keep simple color material already configured
         }
         ground.material = groundMat;
+        // add a dark underside so the ground looks black from below
+        const underside = MeshBuilder.CreateGround('underside', { width: 100, height: 60, subdivisions: 1 }, scene);
+        // place it just below the visible textured ground to avoid z-fighting
+        underside.position.y = -0.01;
+        underside.receiveShadows = false;
+        underside.isPickable = false;
+
+        const undersideMat = new StandardMaterial('undersideMat', scene);
+        // fully black on both sides and unaffected by scene lighting
+        undersideMat.diffuseColor = new Color3(0, 0, 0);
+        undersideMat.specularColor = new Color3(0, 0, 0);
+        undersideMat.backFaceCulling = false;
+        undersideMat.disableLighting = true;
+        underside.material = undersideMat;
         return;
     }
     // 2) Build a checkerboard texture with 10x10 squares (each square = 1 unit)
