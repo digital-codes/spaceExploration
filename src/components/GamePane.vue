@@ -118,8 +118,8 @@ const toggleThrusters = () => {
 
 <template>
   <div>
-    <h2>Pride Pictures Karlsruhe Archiv</h2>
-    <div>
+    <h2 class="title">Pride Pictures Karlsruhe Archiv</h2>
+    <div class="info">
       <p class="item">{{ itemTitle }}</p>
       <p class="item">{{ itemCountry }} {{ itemYear }}</p>
       <p class="item">{{ itemDirector }}</p>
@@ -127,10 +127,10 @@ const toggleThrusters = () => {
 
     </div>
     <div v-if="showVideo">
-    <button @click="onVideoEnd">Skip</button>
+    <button class="btn" @click="onVideoEnd">Skip</button>
     </div>
     <div v-if="showCanvas">
-    <button @click="toggleThrusters">Thrust</button>
+    <button class="btn" @click="toggleThrusters">Thrust</button>
     </div>
   </div>
 
@@ -203,4 +203,35 @@ const toggleThrusters = () => {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+.title {
+  background: #F3EAC3;
+  padding: 0.5em;
+  border-radius: 8px;
+  text-align: center;
+  }
+
+.info {
+  margin: 0.5em 0;
+  padding: 0.5em;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  background: #E6D8A5;
+} 
+
+.btn {
+  margin: 0.5em;
+  padding: 0.5em 1em;
+  font-size: 1em;
+  border: none;
+  border-radius: 4px;
+  background-color: #42b983;
+  color: white;
+  cursor: pointer;
+  background-color: #0E3C48
+}
+.btn:hover {
+  background-color: #1E6E84;
+}
+
 </style>
