@@ -150,8 +150,10 @@ if __name__ == "__main__":
     report_every = 100 # log frequency
     force_threshold = 10 # 1e-2  # stop if total residual force < this
 
-    df = pd.read_json("mcMatch_full.json") [:300]
+    df = pd.read_json("mcMatch_full.json")# [:500]
     N = len(df.index)
+
+    force_threshold *= N/300
 
     # initialize positions and attractors
     pos = np.zeros((N, 3), dtype=np.float32)
