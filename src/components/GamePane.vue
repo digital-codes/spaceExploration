@@ -23,6 +23,14 @@ const emit = defineEmits<{
 */
 
 const gameMsg = ref<string>(""); 
+import movieItems from '../assets/data/movies_rich.json';
+
+const itemTitle = ref<string>("Demo Version ...");
+const itemCountry = ref<string>("Deutschland");
+const itemYear = ref<string>("2025");
+const itemDirector = ref<string>("Aku");
+const itemUrl = ref<string | null>(null);
+
 const gameContainer = ref<HTMLDivElement | null>(null);
 const bjsCanvas = ref<HTMLCanvasElement | null>(null);
 const introVideo = ref<HTMLVideoElement | null>(null);
@@ -82,6 +90,21 @@ function onVideoEnd() {
 const rxMessage = (msg: string, id: number) => {
   console.log("GamePane received message:", msg, id);
   gameMsg.value = msg + ": " + id; // Update the game message
+  if (msg.toLowerCase().startsWith("on") && movieItems[id]) {
+    itemTitle.value = movieItems[id].Titel;
+    itemCountry.value = movieItems[id].LAND;
+    itemYear.value = String(movieItems[id].JAHR);
+    itemDirector.value = movieItems[id].REGIE;
+    itemUrl.value = movieItems[id].tmdb_homepage ? movieItems[id].tmdb_homepage : null;
+  } else {
+    itemTitle.value = "";
+    itemCountry.value = "";
+    itemYear.value = "";
+    itemDirector.value = "";
+    itemUrl.value = null;
+  }
+
+
 };
 
 const toggleThrusters = () => {
@@ -95,8 +118,14 @@ const toggleThrusters = () => {
 
 <template>
   <div>
-    <h2>BabylonJS Vue3 Game Pane</h2>
-    <p >{{ gameMsg }}</p>
+    <h2>Pride Pictures Karlsruhe Archiv</h2>
+    <div>
+      <p class="item">{{ itemTitle }}</p>
+      <p class="item">{{ itemCountry }} {{ itemYear }}</p>
+      <p class="item">{{ itemDirector }}</p>
+      <p class="item"><span v-if="itemUrl"><a :href="itemUrl" target="_blank">URL</a></span></p>
+
+    </div>
     <div v-if="showVideo">
     <button @click="onVideoEnd">Skip</button>
     </div>
@@ -161,4 +190,17 @@ const toggleThrusters = () => {
   height: 100%;
 }
 
+.item {
+  font-size: 1.2em;
+  margin: 0.1em 0;
+  min-height: 1.6em;
+  height: 1.6em;
+  display: block;
+  align-items: center;
+  padding: 0 0.25em;
+  box-sizing: border-box;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 </style>

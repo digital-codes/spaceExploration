@@ -443,7 +443,7 @@ const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): 
         throw new Error('Scene creation failed');
     }
     // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
-    var camera = new ArcRotateCamera('camera1', 0, 1.2, 50, Vector3.Zero(), scene);
+    var camera = new ArcRotateCamera('camera1', -1.6, 1.2, 50, Vector3.Zero(), scene);
     if (!camera) {
         throw new Error('Camera creation failed');
     }
