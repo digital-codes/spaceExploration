@@ -143,7 +143,7 @@ if __name__ == "__main__":
     # ------------------------------------------------------------
     np.random.seed(0)
     A = 9              # attractors per particle. max 6 countries. gravity, buoyancy, cluster (1)
-    rcut = 25.0        # cutoff radius for pairwise repulsion
+    rcut = 20.0        # cutoff radius for pairwise repulsion  below 20 oscillations occur
     step_size = [0.005,0.001]   # global movement scaling
     max_disp = [0.02,0.001]     # per-step max displacement
     max_steps = 100000   # iteration limit
@@ -168,13 +168,13 @@ if __name__ == "__main__":
         # attractors, up to 6, set unused to 0 
         for a in range(len(attractors)):
             attr_pos[i,a] = np.array([attractors[a]["x"], df.iloc[i].b, attractors[a]["z"]], dtype=float)
-            attr_k[i,a] = np.array([1.0, 0.0, 1.0], dtype=float) # pull on x and z only
+            attr_k[i,a] = np.array([5.0, 0.0, 5.0], dtype=float) # pull on x and z only
         # unused attractors are set to 0 by default
         # gravity attractor (pull down on y)
-        attr_k[i,A-3] = np.array([0.0, 1.0, 0.0], dtype=float)  # y only
+        attr_k[i,A-3] = np.array([0.0, 5.0, 0.0], dtype=float)  # y only
         attr_pos[i,A-3] = np.array([0.0, 0.0, 0.0], dtype=float)  # ground level
         # age attractor (pull up on y) / buoyance
-        attr_k[i,A-2] = np.array([0.0, 1.0, 0.0], dtype=float)  # y only
+        attr_k[i,A-2] = np.array([0.0, 5.0, 0.0], dtype=float)  # y only
         attr_pos[i,A-2] = np.array([0.0, df.iloc[i].b, 0.0], dtype=float)  # ground level
         # cluster attractor (pull all)
         attr_k[i,A-1] = np.array([0.0, 0.0, 0.0], dtype=float)  # all axes
