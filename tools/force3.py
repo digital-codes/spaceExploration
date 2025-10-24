@@ -5,7 +5,9 @@ import plotly.graph_objects as go
 import json 
 import random 
 import pandas as pd
+import signal
 import concurrent.futures
+import matplotlib.pyplot as plt
 
 # ----------------------------
 # Model configuration
@@ -21,10 +23,10 @@ GLOBAL_CLUSTER_K     = 0.02     # cluster attraction scale
 GLOBAL_REPULSIVE_K   = .2      # repulsion scale
 GLOBAL_GRAVITY_K     = 0.2     # used for gravity (opposite directions)
 GLOBAL_BUOYANCY_K    = 1.      # used for buoyancy (opposite directions)
-DT                    = 0.04     # integration time step
+DT                    = 0.03     # integration time step. oscillations if too high
 DAMPING               = 0.90     # velocity damping for stability
-FORCE_THRESHOLD       = .1      # stop when max |force| < threshold
-MAX_STEPS             = 100000     # hard cap to avoid runaway sims
+FORCE_THRESHOLD       = 10 # .1      # stop when max |force| < threshold
+MAX_STEPS             = 10000     # hard cap to avoid runaway sims
 EPS                   = 1e-6     # small epsilon for numerical safety
 
 
@@ -179,32 +181,70 @@ def compute_forces():
 # Simulation loop (damped Euler)
 # ----------------------------
 
+tf = []  # track time forces for debugging
 converged = False
-for step in range(1, MAX_STEPS + 1):
-    if step % 10 == 0:
-        print(f"Step {step:4d}...", end="\r")
-    forces = compute_forces()
-    max_force = np.max(np.linalg.norm(forces, axis=1))
+# install a SIGINT handler that sets a flag so we can exit cleanly
+_stop_flag = {"stop": False}
+_orig_sigint = signal.getsignal(signal.SIGINT)
 
-    # print(f"Step {step:4d}  |  max residual force: {max_force:.6f}")
-    # Stop if residual forces are small
-    if max_force < FORCE_THRESHOLD:
-        converged = True
-        print(f"Step {step:4d}  |  max residual force: {max_force:.6f}")
-        break
 
-    # Integrate (unit mass)
-    # Parallelized integration (damped Euler) per body
-    def _integrate_body(b):
-        new_vel = DAMPING * b.vel + DT * forces[b.i]
-        new_pos = b.pos + DT * new_vel
-        return b.i, new_vel, new_pos
+def _sigint_handler(signum, frame):
+    _stop_flag["stop"] = True
+    print("\nSIGINT received — will stop after the current step...")
 
-    max_workers = min(32, max(1, len(bodies)))
-    with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
-        for idx, new_vel, new_pos in ex.map(_integrate_body, bodies):
-            bodies[idx].vel = new_vel
-            bodies[idx].pos = new_pos
+
+signal.signal(signal.SIGINT, _sigint_handler)
+
+try:
+    for step in range(1, MAX_STEPS + 1):
+        if _stop_flag["stop"]:
+            print("Stop requested, breaking simulation loop.")
+            break
+
+        # check tf array. build mean over 10 steps for last 100 steps. check progress
+        if len(tf) >= 100:
+            recent_means = [np.mean(tf[i:i + 10]) for i in range(len(tf) - 100, len(tf), 10)]
+            if all(recent_means[-1] >= m * 0.95 for m in recent_means[:-1]):
+                print(f"Step {step:4d}  |  max residual force: {recent_means[-1]:.6f} (converged by mean check)")
+                break   
+
+        try:
+            forces = compute_forces()
+        except KeyboardInterrupt:
+            _stop_flag["stop"] = True
+            print("\nKeyboardInterrupt during force computation — exiting loop.")
+            break
+
+        max_force = np.max(np.linalg.norm(forces, axis=1))
+        tf.append(max_force)
+        if step % 10 == 0:
+            print(f"Step {step:4d}..., max residual force: {max_force:.6f}", end="\r")
+
+        # Stop if residual forces are small
+        if max_force < FORCE_THRESHOLD:
+            converged = True
+            print(f"Step {step:4d}  |  max residual force: {max_force:.6f}")
+            break
+
+        # Integrate (unit mass) - parallelized per body
+        def _integrate_body(b):
+            new_vel = DAMPING * b.vel + DT * forces[b.i]
+            new_pos = b.pos + DT * new_vel
+            return b.i, new_vel, new_pos
+
+        max_workers = min(32, max(1, len(bodies)))
+        try:
+            with concurrent.futures.ThreadPoolExecutor(max_workers=max_workers) as ex:
+                for idx, new_vel, new_pos in ex.map(_integrate_body, bodies):
+                    bodies[idx].vel = new_vel
+                    bodies[idx].pos = new_pos
+        except KeyboardInterrupt:
+            _stop_flag["stop"] = True
+            print("\nKeyboardInterrupt during integration — exiting loop.")
+            break
+finally:
+    # restore original SIGINT handler
+    signal.signal(signal.SIGINT, _orig_sigint)
 
 # ----------------------------
 # Results
@@ -250,6 +290,21 @@ for i, b in enumerate(bodies):
 # Write to file
 with open("objects.json", "w") as f:
     json.dump(objects_json, f, indent=4)
+
+
+if len(tf) > 0:
+    steps = list(range(1, len(tf) + 1))
+    plt.figure(figsize=(8, 4))
+    plt.plot(steps, tf, '-o', markersize=3)
+    plt.xlabel('Step')
+    plt.ylabel('Max residual force')
+    plt.title('Max residual force vs Simulation Step')
+    plt.grid(True, linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.savefig('tf_vs_steps.png', dpi=300)
+    plt.show()
+else:
+    print("No tf data to plot.")
 
 sys.exit()
 
