@@ -94,9 +94,9 @@ def compute_forces(pos, rcut, attr_pos, attr_k):
                 forces[i,1] += -ky * (py - ay)
             if kz != 0.0:
                 forces[i,2] += -kz * (pz - az)
-        if py < .75:  # diameter 1
+        if py < 1:  # diameter 1
             # ground plane repulsion
-            forces[i,1] += 10 * (0.75 - py)  # push up
+            forces[i,1] += 10 * (1 - py)  # push up
 
     return forces
 
