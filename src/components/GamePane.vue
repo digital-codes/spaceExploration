@@ -220,8 +220,8 @@ const toggleThrusters = () => {
   border: 1px solid #ccc;
   border-radius: 8px;
   background: #E6D8A5;
-  width: 40vh;
-  height: 22.5vh;
+  width: 42vh;
+  height: 23vh;
   margin: auto;
 }
 
@@ -249,13 +249,13 @@ const toggleThrusters = () => {
   */
 }
 .infoOpen {
-  background-image: url("img/backgrounds/movie_open.jpg");
+  background-image: url("/img/backgrounds/movie_open.jpg");
   background-size: cover;
   background-position: center;
   color: black;
 }
 .infoClosed {
-  background-image: url("img/backgrounds/movie_closed.jpg");
+  background-image: url("/img/backgrounds/movie_closed.jpg");
   background-size: cover;
   background-position: center;
   color: transparent;
@@ -270,11 +270,13 @@ const toggleThrusters = () => {
   }
 
   .info {
-    padding: 0.35rem;
+    padding: 0.1rem;
     margin: 0;
     overflow:scroll;
     margin-left: auto;
     margin-right: auto;
+    width: 45vh;
+    height: 25vh;
   }
 
   .item {
