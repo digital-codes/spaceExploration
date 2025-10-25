@@ -35,7 +35,8 @@ const showCanvas = ref(false);
 const showVideo = ref(true);
 let resizeObserver: ResizeObserver | null = null;
 
-const videoSrc = new URL('/video/journeyStarts_2_veo3_1.mp4', import.meta.url).href;
+//const videoSrc = new URL('/video/journeyStarts_2_veo3_1.mp4', import.meta.url).href;
+const videoSrc = new URL('/video/intro.mp4', import.meta.url).href;
 
 onMounted(async () => {
  // autoplay video as soon as mounted
