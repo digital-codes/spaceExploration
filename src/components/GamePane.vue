@@ -14,7 +14,7 @@ the BabylonJS Engine or Scene object reactive. If you suspect such behaviour, te
 
 
 import { ref, onMounted, onBeforeUnmount, nextTick } from "@vue/runtime-core";
-import { buildCanvas, setCb, disposeEngine, getParams, setParams, resizeGame } from "../scenes/scene1";
+import { buildCanvas, setCb, disposeEngine, getParams, setParams, resizeGame } from "../scenes/scene1/main";
 
 /*
 const emit = defineEmits<{
@@ -23,7 +23,7 @@ const emit = defineEmits<{
 */
 
 const gameMsg = ref<string>(""); 
-import movieItems from '../assets/data/movies_rich.json';
+import movieItems from '@/assets/data/movies_rich.json';
 
 const itemTitle = ref<string>("Demo Version ...");
 const itemCountry = ref<string>("Deutschland");
