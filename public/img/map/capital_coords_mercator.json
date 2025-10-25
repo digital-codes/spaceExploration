@@ -1,0 +1,90 @@
+{
+  "projection": "Mercator",
+  "width_units": 100.0,
+  "origin": {
+    "x": 0,
+    "y": 0
+  },
+  "capitals": [
+    {
+      "country": "United States",
+      "city": "Washington, D.C.",
+      "lat": 38.9072,
+      "lon": -77.0369,
+      "x": -21.399139,
+      "y": 11.748935
+    },
+    {
+      "country": "Argentina",
+      "city": "Buenos Aires",
+      "lat": -34.6037,
+      "lon": -58.3816,
+      "x": -16.217111,
+      "y": -10.256153
+    },
+    {
+      "country": "Australia",
+      "city": "Canberra",
+      "lat": -35.2809,
+      "lon": 149.13,
+      "x": 41.425,
+      "y": -10.485635
+    },
+    {
+      "country": "India",
+      "city": "New Delhi",
+      "lat": 28.6139,
+      "lon": 77.209,
+      "x": 21.446944,
+      "y": 8.300921
+    },
+    {
+      "country": "Japan",
+      "city": "Tokyo",
+      "lat": 35.6762,
+      "lon": 139.6503,
+      "x": 38.79175,
+      "y": 10.620477
+    },
+    {
+      "country": "China",
+      "city": "Beijing",
+      "lat": 39.9042,
+      "lon": 116.4074,
+      "x": 32.335389,
+      "y": 12.10737
+    },
+    {
+      "country": "Russia",
+      "city": "Moscow",
+      "lat": 55.7558,
+      "lon": 37.6173,
+      "x": 10.44925,
+      "y": 18.739743
+    },
+    {
+      "country": "Germany",
+      "city": "Berlin",
+      "lat": 52.52,
+      "lon": 13.405,
+      "x": 3.723611,
+      "y": 17.204484
+    },
+    {
+      "country": "Israel",
+      "city": "Jerusalem",
+      "lat": 31.7683,
+      "lon": 35.2137,
+      "x": 9.781583,
+      "y": 9.314867
+    },
+    {
+      "country": "South Africa",
+      "city": "Pretoria",
+      "lat": -25.7479,
+      "lon": 28.2293,
+      "x": 7.841472,
+      "y": -7.405838
+    }
+  ]
+}

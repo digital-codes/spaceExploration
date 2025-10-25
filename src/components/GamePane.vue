@@ -26,6 +26,8 @@ const itemYear = ref<string>("2025");
 const itemDirector = ref<string>("Aku");
 const itemUrl = ref<string | null>(null);
 
+const infoClass = ref<string>("infoRaw");
+
 const gameContainer = ref<HTMLDivElement | null>(null);
 const bjsCanvas = ref<HTMLCanvasElement | null>(null);
 const introVideo = ref<HTMLVideoElement | null>(null);
@@ -79,6 +81,7 @@ function onVideoEnd() {
   // small fade-in delay (optional aesthetic)
   setTimeout(async () => {
     await nextTick();
+    infoClass.value = "infoClosed";
     resizeGame();
     setParams("renderLoop", true);
   }, 200);
@@ -93,12 +96,14 @@ const rxMessage = (msg: string, id: number) => {
     itemYear.value = String(movieItems[id].JAHR);
     itemDirector.value = movieItems[id].REGIE;
     itemUrl.value = movieItems[id].tmdb_homepage ? movieItems[id].tmdb_homepage : null;
+    infoClass.value = "infoOpen";
   } else {
     itemTitle.value = "";
     itemCountry.value = "";
     itemYear.value = "";
     itemDirector.value = "";
     itemUrl.value = null;
+    infoClass.value = "infoClosed";
   }
 
 
@@ -116,8 +121,8 @@ const toggleThrusters = () => {
 <template>
   <div>
     <h2 class="title">Pride Pictures Karlsruhe Archiv</h2>
-    <div class="info">
-      <p class="item">{{ itemTitle }}</p>
+    <div class="info" :class="infoClass">
+      <p class="item item1">{{ itemTitle }}</p>
       <p class="item">{{ itemCountry }} {{ itemYear }}</p>
       <p class="item">{{ itemDirector }}</p>
       <p class="item"><span v-if="itemUrl"><a :href="itemUrl" target="_blank">URL</a></span></p>
@@ -179,7 +184,9 @@ const toggleThrusters = () => {
 .gamepane-container {
   position: relative;
   width: 100%;
+  /*
   height: 100%;
+  */
 }
 
 .item {
@@ -196,6 +203,10 @@ const toggleThrusters = () => {
   text-overflow: ellipsis;
 }
 
+.item1 {
+  margin-top:1rem;
+}
+
 .title {
   background: #F3EAC3;
   padding: 0.5em;
@@ -209,7 +220,10 @@ const toggleThrusters = () => {
   border: 1px solid #ccc;
   border-radius: 8px;
   background: #E6D8A5;
-} 
+  width: 40vh;
+  height: 22.5vh;
+  margin: auto;
+}
 
 .btn {
   margin: 0.5em;
@@ -226,6 +240,27 @@ const toggleThrusters = () => {
   background-color: #1E6E84;
 }
 
+.infoRaw {
+  /*
+  background-image: url(~@/assets/img/movie_closed.jpg);
+  background-size: cover;
+  background-position: center;
+  color: transparent;
+  */
+}
+.infoOpen {
+  background-image: url("img/backgrounds/movie_open.jpg");
+  background-size: cover;
+  background-position: center;
+  color: black;
+}
+.infoClosed {
+  background-image: url("img/backgrounds/movie_closed.jpg");
+  background-size: cover;
+  background-position: center;
+  color: transparent;
+}
+
 
 @media (max-width: 600px) {
 
@@ -236,12 +271,14 @@ const toggleThrusters = () => {
 
   .info {
     padding: 0.35rem;
-    margin: 0.35em 0;
-    overflow:scroll
+    margin: 0;
+    overflow:scroll;
+    margin-left: auto;
+    margin-right: auto;
   }
 
   .item {
-    font-size: 1rem;
+    font-size: .8rem;
     /*
     min-height: auto;
     height: auto;
