@@ -14,13 +14,8 @@ the BabylonJS Engine or Scene object reactive. If you suspect such behaviour, te
 
 
 import { ref, onMounted, onBeforeUnmount, nextTick } from "@vue/runtime-core";
-import { buildCanvas, setCb, disposeEngine, getParams, setParams, resizeGame } from "../scenes/scene1/main";
+import { buildCanvas, setCb, disposeEngine, getParams, setParams, resizeGame } from "@/scenes/scene1/main";
 
-/*
-const emit = defineEmits<{
-  (e: 'message', msg: string, id: number): void
-}>();
-*/
 
 const gameMsg = ref<string>(""); 
 import movieItems from '@/assets/data/movies_rich.json';
@@ -82,9 +77,11 @@ function onVideoEnd() {
   gameMsg.value = "Starting ...";
 
   // small fade-in delay (optional aesthetic)
-  setTimeout(() => {
+  setTimeout(async () => {
+    await nextTick();
+    resizeGame();
     setParams("renderLoop", true);
-  }, 300);
+  }, 200);
 }
 
 const rxMessage = (msg: string, id: number) => {
@@ -127,7 +124,7 @@ const toggleThrusters = () => {
 
     </div>
     <div v-if="showVideo">
-    <button class="btn" @click="onVideoEnd">Skip</button>
+    <button class="btn" @click="onVideoEnd">Skip Video</button>
     </div>
     <div v-if="showCanvas">
     <button class="btn" @click="toggleThrusters">Thrust</button>
@@ -154,7 +151,7 @@ const toggleThrusters = () => {
     <canvas
       v-show="showCanvas"
       ref="bjsCanvas"
-      class="gamepane-canvas"
+      class="game-canvas"
     ></canvas>
   </div>
   <!--  
@@ -165,18 +162,13 @@ const toggleThrusters = () => {
 </template>
 
 <style scoped>
-.gamepane-canvas {
+.game-canvas {
   box-sizing: border-box;
   width: 100%; 
   height: 50vh;
   border: 2px solid #ccc;
   border-radius: 8px;
   overflow: hidden;
-}
-.babylon-canvas {
-  width: 100%;
-  height: 100%;
-  display: block;
 }
 .intro-video {
   width: 100%;
@@ -234,4 +226,39 @@ const toggleThrusters = () => {
   background-color: #1E6E84;
 }
 
+
+@media (max-width: 600px) {
+
+  .title {
+    font-size: 1.1rem;
+    padding: 0.35rem;
+  }
+
+  .info {
+    padding: 0.35rem;
+    margin: 0.35em 0;
+    overflow:scroll
+  }
+
+  .item {
+    font-size: 1rem;
+    /*
+    min-height: auto;
+    height: auto;
+    white-space: normal; 
+    overflow: visible;
+    text-overflow: clip;
+    */
+  }
+
+  .btn {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 0.65rem;
+    font-size: .8rem;
+    margin: 0.4em 0;
+    border-radius: 6px;
+  }
+}
 </style>
