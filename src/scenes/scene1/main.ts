@@ -2,7 +2,7 @@ import {
     Scene, Engine, HemisphericLight, MeshBuilder,
     Mesh, Vector3, Color3, Color4, StandardMaterial,
     PointLight, AbstractMesh,
-    Frustum, FreeCamera, 
+    Frustum, FreeCamera, Quaternion,
     ArcRotateCamera, PBRMaterial, FlyCamera,
     DirectionalLight,
     type Nullable
@@ -77,7 +77,7 @@ const sysParms: SceneParams = {
     gravity: 1.0,
     buoyance: 1.0,
     cluster: 1.0,
-    camMode: 'arcRotate', // other options: default, 'arcRotate', 'free', 'follow', 'fly'
+    camMode: 'fly', // other options: default, 'arcRotate', 'free', 'follow', 'fly'
     thrustersOn: false,
 }
 
@@ -142,14 +142,49 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
                 setThrusters(glider.thrustersOn);
             }
             // update glider x,y,z position from last position and speed
-            glider.posX += glider.speedX;
-            glider.posY += glider.speedY;
-            glider.posZ += glider.speedZ;
+            //glider.posX += glider.speedX;
+            //glider.posY += glider.speedY;
+            //glider.posZ += glider.speedZ;
             /* The above code is setting the position of a mesh object named "glider" using the values of its posX,
             posY, and posZ properties. It is creating a new Vector3 object with these values and assigning it to
             the position property of the glider.mesh object. */
             //glider.mesh.position = new Vector3(glider.posX, glider.posY, glider.posZ);  
+            // position glider just below camera in lookat direction    
+            // keep the glider at a fixed distance in front of the camera so it's always partially visible
+            const camDir = camera.getTarget().subtract(camera.position).normalize();
+            // rotate the offset vector by the camera's rotation quaternion into a temp vector
+            const offset = new Vector3(0, -0.8, 0); // slight right and down offset
+            const desiredDistance = typeof sysParms.cameraDistance === 'number' ? sysParms.cameraDistance : 2.5;
+            const minCameraDist = (camera.minZ ?? 0.1) + 0.5; // ensure it's outside the near clipping plane
+            const distance = Math.max(desiredDistance, minCameraDist);
+
+            const forwardDir = camDir && camDir.length() > 0 ? camDir.normalize() : new Vector3(0, 0, 1);
+            const targetPos = camera.position.add(forwardDir.scale(distance)).add(offset);
+
+            // copy to mesh position (preserves any internal references)
+            glider.mesh.position.copyFrom(targetPos);
+
+            // align glider orientation with the camera so it faces the same direction and remains visually consistent
+            const camRotQuat = (camera as any).rotationQuaternion
+                ?? (typeof (camera as any).rotation === 'object'
+                    ? Quaternion.RotationYawPitchRoll(
+                        (camera as any).rotation.y || 0,
+                        (camera as any).rotation.x || 0,
+                        (camera as any).rotation.z || 0
+                    )
+                    : undefined);
+            if (camRotQuat) {
+                glider.mesh.rotationQuaternion = camRotQuat.clone();
+            }
+
+            // ensure the glider is rendered and not accidentally culled
+            glider.mesh.isVisible = true;
+            // keep it from being excluded from active mesh lists (helps ensure it's drawn in various camera modes)
+            (glider.mesh as any).alwaysSelectAsActiveMesh = true;
         }
+
+
+        // --- Object selection logic ---
         const { name: closestName } = raySelect(scene, camera, camera.getTarget(), SHOW_DISTANCE, undefined);
         //console.log("Ray Select:", "Closest:", closestName);
         if (closestName) {
