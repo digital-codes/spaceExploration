@@ -10,7 +10,7 @@ import {
 
 // scene construction imports
 import createGround from './ground';
-import { createGlider, setThrusters, glider } from './glider';
+import { createGlider, setThrusters, glider, updateGlider } from './glider';
 import createPlanet from './planets';
 import createSkybox from './skybox';
 import raySelect from './raySelect';
@@ -45,6 +45,16 @@ interface PlanetObject {
     [key: string]: any;
 }
 
+export type InputState = {
+    forward: number;
+    right: number;
+    up: number;
+    yaw: number;
+    pitch: number;
+};
+const inputState: InputState = { forward: 0, right: 0, up: 0, yaw: 0, pitch: 0 };
+
+
 // import raw JSON and assert the typed shape
 import rawSystem from '@/assets/data/objects.json';
 import planetGlow from './planetGlow';
@@ -77,7 +87,7 @@ const sysParms: SceneParams = {
     gravity: 1.0,
     buoyance: 1.0,
     cluster: 1.0,
-    camMode: 'fly', // other options: default, 'arcRotate', 'free', 'follow', 'fly'
+    camMode: 'free', // other options: default, 'arcRotate', 'free', 'follow', 'fly'
     thrustersOn: false,
 }
 
@@ -134,53 +144,34 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
     const SHOW_DISTANCE = 8; // threshold in world units
     let planetSelected: number | null = null;
 
+    // controls
+    // --- DESKTOP CONTROLS (WASDQE + Mouse) ---
+    window.addEventListener("keydown", (e) => {
+        if (e.code === "KeyW") inputState.forward = 1;
+        if (e.code === "KeyS") inputState.forward = -1;
+        if (e.code === "KeyA") inputState.right = -1;
+        if (e.code === "KeyD") inputState.right = 1;
+        if (e.code === "KeyE") inputState.up = 1;
+        if (e.code === "KeyQ") inputState.up = -1;
+    });
+    window.addEventListener("keyup", (e) => {
+        if (["KeyW", "KeyS"].includes(e.code)) inputState.forward = 0;
+        if (["KeyA", "KeyD"].includes(e.code)) inputState.right = 0;
+        if (["KeyQ", "KeyE"].includes(e.code)) inputState.up = 0;
+    });
+
+
     engine.scenes[0].beforeRender = function () {
+        const dt = scene.getEngine().getDeltaTime() / 1000;
+
         if (glider.mesh) {
             // update thruster colors based on parameter
             if (sysParms.thrustersOn !== glider.thrustersOn) {
                 glider.thrustersOn = sysParms.thrustersOn || false;
                 setThrusters(glider.thrustersOn);
             }
-            // update glider x,y,z position from last position and speed
-            //glider.posX += glider.speedX;
-            //glider.posY += glider.speedY;
-            //glider.posZ += glider.speedZ;
-            /* The above code is setting the position of a mesh object named "glider" using the values of its posX,
-            posY, and posZ properties. It is creating a new Vector3 object with these values and assigning it to
-            the position property of the glider.mesh object. */
-            //glider.mesh.position = new Vector3(glider.posX, glider.posY, glider.posZ);  
-            // position glider just below camera in lookat direction    
-            // keep the glider at a fixed distance in front of the camera so it's always partially visible
-            const camDir = camera.getTarget().subtract(camera.position).normalize();
-            // rotate the offset vector by the camera's rotation quaternion into a temp vector
-            const offset = new Vector3(0, -0.8, 0); // slight right and down offset
-            const desiredDistance = typeof sysParms.cameraDistance === 'number' ? sysParms.cameraDistance : 2.5;
-            const minCameraDist = (camera.minZ ?? 0.1) + 0.5; // ensure it's outside the near clipping plane
-            const distance = Math.max(desiredDistance, minCameraDist);
+            updateGlider(camera as FreeCamera, new Vector3(0,0,0), dt, inputState); // empty input state for now
 
-            const forwardDir = camDir && camDir.length() > 0 ? camDir.normalize() : new Vector3(0, 0, 1);
-            const targetPos = camera.position.add(forwardDir.scale(distance)).add(offset);
-
-            // copy to mesh position (preserves any internal references)
-            glider.mesh.position.copyFrom(targetPos);
-
-            // align glider orientation with the camera so it faces the same direction and remains visually consistent
-            const camRotQuat = (camera as any).rotationQuaternion
-                ?? (typeof (camera as any).rotation === 'object'
-                    ? Quaternion.RotationYawPitchRoll(
-                        (camera as any).rotation.y || 0,
-                        (camera as any).rotation.x || 0,
-                        (camera as any).rotation.z || 0
-                    )
-                    : undefined);
-            if (camRotQuat) {
-                glider.mesh.rotationQuaternion = camRotQuat.clone();
-            }
-
-            // ensure the glider is rendered and not accidentally culled
-            glider.mesh.isVisible = true;
-            // keep it from being excluded from active mesh lists (helps ensure it's drawn in various camera modes)
-            (glider.mesh as any).alwaysSelectAsActiveMesh = true;
         }
 
 
@@ -290,24 +281,45 @@ const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): 
     camera.setTarget(Vector3.Zero());
     // Attach the camera to the canvas
 
-    if (camera instanceof FlyCamera) {
-        camera.speed = .1;
-        camera.inertia = 0.9;
-        camera.angularSensibility = 5000;
-        camera.attachControl(true);
-        camera.applyGravity = false;
-        camera.checkCollisions = false;
 
-    } else {
-        camera.attachControl(canvas, true);
-        // --- Smoothness tweaks ---
-        camera.wheelPrecision = 100;                // 🟢 smaller = faster zoom; larger = slower
-        camera.wheelDeltaPercentage = 0.01;         // 🟢 smooth zoom with percentage-based delta
-        camera.inertia = 0.9;                       // 🟢 smoothing after movement (0 = immediate)
-        camera.panningInertia = 0.9;                // 🟢 same for panning
-        camera.lowerRadiusLimit = 2;                // optional min zoom distance
-        camera.upperRadiusLimit = 100;              // optional max zoom distance
+    switch (sysParms.camMode) {
+        case 'arcRotate':
+            (camera as ArcRotateCamera).attachControl(canvas, true);
+            // --- Smoothness tweaks ---
+            (camera as ArcRotateCamera).wheelPrecision = 100;                // 🟢 smaller = faster zoom; larger = slower
+            (camera as ArcRotateCamera).wheelDeltaPercentage = 0.01;         // 🟢 smooth zoom with percentage-based delta
+            (camera as ArcRotateCamera).inertia = 0.9;                       // 🟢 smoothing after movement (0 = immediate)
+            (camera as ArcRotateCamera).panningInertia = 0.9;                // 🟢 same for panning
+            (camera as ArcRotateCamera).lowerRadiusLimit = 2;                // optional min zoom distance
+            (camera as ArcRotateCamera).upperRadiusLimit = 100;              // optional max zoom distance
+            break;
+        case 'fly':
+            (camera as FlyCamera).speed = .1;
+            (camera as FlyCamera).inertia = 0.9;
+            (camera as FlyCamera).angularSensibility = 5000;
+            (camera as FlyCamera).attachControl(true);
+            (camera as FlyCamera).applyGravity = false;
+            (camera as FlyCamera).checkCollisions = false;
+            break;
+        case 'free':
+            (camera as unknown as FreeCamera).attachControl(canvas, true);
+            (camera as unknown as FreeCamera).minZ = 0.1;
+            (camera as unknown as FreeCamera).speed = 0.5;
+            (camera as unknown as FreeCamera).inertia = 0.6;
+            break;
+        default:
+            (camera as ArcRotateCamera).attachControl(canvas, true);
+            // --- Smoothness tweaks ---
+            (camera as ArcRotateCamera).wheelPrecision = 100;                // 🟢 smaller = faster zoom; larger = slower
+            (camera as ArcRotateCamera).wheelDeltaPercentage = 0.01;         // 🟢 smooth zoom with percentage-based delta
+            (camera as ArcRotateCamera).inertia = 0.9;                       // 🟢 smoothing after movement (0 = immediate)
+            (camera as ArcRotateCamera).panningInertia = 0.9;                // 🟢 same for panning
+            (camera as ArcRotateCamera).lowerRadiusLimit = 2;                // optional min zoom distance
+            (camera as ArcRotateCamera).upperRadiusLimit = 100;              // optional max zoom distance
+            break;
+        
     }
+
 
     /*
     scene.createDefaultEnvironment({
