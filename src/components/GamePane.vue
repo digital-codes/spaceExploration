@@ -133,6 +133,7 @@ const toggleThrusters = () => {
     <button class="btn" @click="onVideoEnd">Skip Video</button>
     </div>
     <div v-if="showCanvas">
+    <p class="msg">Controls: Q/E, W/S, A/D</p>
     <!-- 
     <button class="btn" @click="toggleThrusters">Thrust</button>
       -->
@@ -226,6 +227,17 @@ const toggleThrusters = () => {
   width: 42vh;
   height: 23vh;
   margin: auto;
+}
+
+.msg {
+  margin: 0.5em;
+  padding: 0.5em 1em;
+  font-size: 1em;
+  border: none;
+  border-radius: 4px;
+  background-color: #42b983;
+  color: white;
+  background-color: #0E3C48
 }
 
 .btn {
