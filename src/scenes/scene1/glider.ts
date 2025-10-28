@@ -1,27 +1,31 @@
 import {
     Scene, AbstractMesh, Vector3, Color3, GlowLayer,
-    PBRMaterial, Quaternion, 
+    PBRMaterial, Quaternion,
     TransformNode,
     type Nullable,
     Mesh, FreeCamera,
+    Matrix,
 } from '@babylonjs/core';
 import { AppendSceneAsync } from "@babylonjs/core/Loading/sceneLoader";
 import "@babylonjs/loaders/glTF"; // Enable GLTF/GLB loader
 
-import type {InputState} from "@/scenes/scene1/main.ts";
+import type { InputState } from "@/scenes/scene1/main.ts";
 
 // glider
 const glider = {
     mesh: null as Nullable<TransformNode> | null,
-    speedX: 0.002,
-    speedY: 0.004,
-    speedZ: 0.003,
-    rotX: 0.0,
-    rotY: 0.0,
-    rotZ: 0.0,
-    posX: 2,
+    marker: null as Nullable<TransformNode> | null,
+    speed: 0.0,
+    yaw: 0.0,
+    pitch: 0.0,
+    roll: 0.0,
+    rotationQuat: Quaternion.Identity(),
+    posX: -20,
     posY: 1,
-    posZ: 3,
+    posZ: -10,
+    maxSpeed: 15.0,
+    accel: 10.0,
+    decel: 10.0,
     thrustersOn: true,
     thrustOffColor: new Color3(0.0, 0.0, 0.0), // default black
     thrustOnColor: new Color3(0.1, 0.7, 1.0), // icy blue
@@ -32,6 +36,7 @@ const glider = {
 
 const createGlider = async (scene: Scene) => {
     console.log("Loading glider model...");
+    // space-glider.glb
     await AppendSceneAsync("models/glider/space_glider.glb", scene, {
         onProgress: (ev) => {
             if (ev.lengthComputable) {
@@ -74,8 +79,10 @@ const createGlider = async (scene: Scene) => {
     glider.tl = TLmesh;
     glider.tr = TRmesh;
     glider.mesh.position = new Vector3(glider.posX, glider.posY, glider.posZ);
-    glider.mesh.rotation = new Vector3(glider.rotX, glider.rotY, glider.rotZ);
-    glider.mesh.scaling = new Vector3(1.0, 1.0, 1.0);
+    // 💡 Fix orientation: rotate 180° around Y so engines are at rear
+    glider.mesh.rotationQuaternion = Quaternion.FromEulerAngles(0, 0, 0);
+    // glider.mesh.rotation = new Vector3(glider.yaw, glider.pitch, glider.roll);
+    glider.mesh.scaling = new Vector3(.2, .2, .2);
 
 
     // 2️⃣ Add a glow layer (this makes emissive visible)
@@ -104,48 +111,102 @@ const setThrusters = (on: boolean) => {
             if (mat && mat instanceof PBRMaterial) {
                 mat.emissiveColor = color;
                 mat.emissiveIntensity = 1;
-                mat.disableLighting = false;   
+                mat.disableLighting = false;
             } else {
                 console.log("Thruster material is not PBRMaterial");
             }
         }
     });
-    
+
 };
 
-const followOffset = new Vector3(0, 1.2, -4); // rear-top position relative to glider
 
-
-const updateGlider = (camera: FreeCamera, cameraTarget: Vector3, dt: number, dirs: InputState) => {
-    const speed = 6;
+const updateGlider = (camera: FreeCamera, cameraType: string, birdCam: FreeCamera | null, dt: number, dirs: InputState) => {
     const gm = glider.mesh as Mesh;
-    let forward = Vector3.TransformNormal(new Vector3(0, 0, 1), gm.getWorldMatrix());
-    let right = Vector3.TransformNormal(new Vector3(1, 0, 0), gm.getWorldMatrix());
-    let up = Vector3.TransformNormal(new Vector3(0, 1, 0), gm.getWorldMatrix());
 
     if (gm) {
-        // Update glider orientation (yaw/pitch)
-        const yawQuat = Quaternion.RotationAxis(Vector3.Up(), dirs.yaw);
-        const pitchQuat = Quaternion.RotationAxis(Vector3.Right(), dirs.pitch);
-        gm.rotationQuaternion = new Quaternion();
-        yawQuat.multiplyToRef(pitchQuat, gm.rotationQuaternion);
+        // Update rotation (yaw, pitch, roll)
 
-        // Forward, right, and up vectors
-        forward = Vector3.TransformNormal(new Vector3(0, 0, 1), gm.getWorldMatrix());
-        right = Vector3.TransformNormal(new Vector3(1, 0, 0), gm.getWorldMatrix());
-        up = Vector3.TransformNormal(new Vector3(0, 1, 0), gm.getWorldMatrix());
+        const yawRate = 1.5;
+        const pitchRate = 1.2;
 
-        // Move glider
-        gm.position.addInPlace(forward.scale(dirs.forward * speed * dt));
-        gm.position.addInPlace(right.scale(dirs.right * speed * dt));
-        gm.position.addInPlace(up.scale(dirs.up * speed * dt));
+        // per-frame input angles (small deltas, not absolute values)
+        const yawDelta = dirs.yaw * yawRate * dt;
+        const pitchDelta = dirs.pitch * pitchRate * dt;
 
+
+        // 1. get local axes from current orientation
+        //const right = Vector3.TransformNormal(Vector3.Right(), gm.getWorldMatrix()).normalize();
+        const up = Vector3.TransformNormal(Vector3.Up(), gm.getWorldMatrix()).normalize();
+
+        // 2. build incremental rotations around those LOCAL axes
+        const qYawLocal = Quaternion.RotationAxis(up, yawDelta);
+        //const qPitchLocal = Quaternion.RotationAxis(right, pitchDelta);
+
+        // 3. apply them to current orientation
+        //glider.rotationQuat = qYawLocal.multiply(qPitchLocal).multiply(glider.rotationQuat);
+        glider.rotationQuat = qYawLocal.multiply(glider.rotationQuat);
+        glider.rotationQuat.normalize();
+        gm.rotationQuaternion = glider.rotationQuat;
+
+
+        // --- Direction: nose points forward, roll tilts climb ---
+        //const localForward = new Vector3(0, 0, -1);
+        //const forward = Vector3.TransformNormal(localForward, gm.getWorldMatrix()).normalize();
+        //const forward = Vector3.TransformNormal(new Vector3(0, 0, 1), gm.getWorldMatrix()).normalize();
+        // local forward is now -Z because of the 180° flip above
+        //const forwardLocal = new Vector3(0, 0, -1);
+        //const forward = Vector3.TransformNormal(forwardLocal, gm.getWorldMatrix()).normalize();
+
+        const rotationMatrix = new Matrix();
+        Matrix.FromQuaternionToRef(glider.rotationQuat, rotationMatrix);
+        const forward = Vector3.TransformNormal(
+            Vector3.Forward(),
+            rotationMatrix
+        ).normalize();
+
+        // Update speed
+        if (dirs.thrust > 0) glider.speed = Math.min(glider.maxSpeed, glider.speed + glider.accel * dt);
+        else if (dirs.thrust < 0) glider.speed = Math.max(0, glider.speed - glider.decel * dt);
+        else glider.speed *= 0.99; // drag
+
+        // Update position
+        gm.position.addInPlace(forward.scale(glider.speed * dt));
+
+        // change y position by pitchDelta to simulate climb/dive
+        gm.position.y += pitchDelta;
+
+
+        // 
+        /*
+        console.log(`Glider speed: ${glider.speed.toFixed(2)}`);
+        console.log(`Glider position: ${gm.position.toString()}`);
+        console.log(`Glider rotation (yaw,pitch,roll): (${glider.yaw.toFixed(2)}, ${glider.pitch.toFixed(2)}, ${glider.roll.toFixed(2)})`);
+        */
+       
+        // ---- Always-visible camera ----
+        if (cameraType === 'free') {
+            // Desired position = behind + above glider in world space
+            const rearOffset = new Vector3(0, 2, -4);
+            const offsetWorld = Vector3.TransformCoordinates(rearOffset, gm.getWorldMatrix());
+
+            // Smooth follow (optional)
+            camera.position = Vector3.Lerp(camera.position, offsetWorld, 0.1);
+
+            // Camera always looks slightly ahead of glider (not its back)
+            const lookAhead = Vector3.TransformCoordinates(new Vector3(0, 0, 10), gm.getWorldMatrix());
+            camera.setTarget(Vector3.Lerp(camera.getTarget(), lookAhead, 0.2));
+
+            // Keep horizon upright: reset upVector each frame
+            camera.upVector = Vector3.Up();
+        }
+        if (birdCam) {
+            // --- Bird’s-eye mini-map follows glider position ---
+            birdCam.position.x = gm.position.x;
+            birdCam.position.z = gm.position.z;
+            //birdCam.setTarget(gm.position);
+        }
     }
-    // --- CAMERA FOLLOWS GLIDER ---
-    cameraTarget.copyFrom(gm.position);
-    const rotatedOffset = Vector3.TransformCoordinates(followOffset, gm.getWorldMatrix());
-    camera.position.copyFrom(rotatedOffset);
-    camera.setTarget(gm.position.add(forward.scale(5))); // camera looks ahead a bit
 };
 
 export { createGlider, setThrusters, glider, updateGlider };
