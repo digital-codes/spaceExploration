@@ -1,6 +1,5 @@
 // TypeScript/JS (Babylon.js v8)
-import { AbstractMesh, Ray, Vector3, Scene, Camera, PickingInfo } from "@babylonjs/core";
-import { name } from "@babylonjs/gui";
+import { AbstractMesh, Ray, Vector3, Scene, Camera } from "@babylonjs/core";
 
 /**
  * Find all intersects between camera.position and a lookAt point,

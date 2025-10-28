@@ -109,14 +109,14 @@ const rxMessage = (msg: string, id: number) => {
 
 
 };
-
+/*
 const toggleThrusters = () => {
   const params = getParams();
   const thrustersOn = params.thrustersOn as boolean;
   setParams("thrustersOn", !thrustersOn);
   console.log(`Thrusters turned ${!thrustersOn ? 'ON' : 'OFF'}`);
 };
-
+*/
 </script>
 
 <template>
@@ -133,7 +133,9 @@ const toggleThrusters = () => {
     <button class="btn" @click="onVideoEnd">Skip Video</button>
     </div>
     <div v-if="showCanvas">
+    <!-- 
     <button class="btn" @click="toggleThrusters">Thrust</button>
+      -->
     </div>
   </div>
 

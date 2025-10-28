@@ -1,5 +1,5 @@
 import {
-    Scene,  MeshBuilder, Camera,
+    Scene,  MeshBuilder, 
     Vector3, Color3, GlowLayer,
     PBRMaterial,
     type Nullable,
@@ -7,7 +7,7 @@ import {
 } from '@babylonjs/core';
 
 // activate glow ring 
-export default function planetGlow(scene: Scene, planet: AbstractMesh, camera: Camera) {
+export default function planetGlow(scene: Scene, planet: AbstractMesh) {
     // create / reuse a single shared glow layer for selections
     let selectionGlow = (scene as any).__selectionGlow as Nullable<GlowLayer> | undefined;
     if (!selectionGlow) {

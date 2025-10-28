@@ -23,6 +23,8 @@ const glider = {
     posX: -20,
     posY: 1,
     posZ: -10,
+    extendsX: 50,
+    extendsZ: 30,
     maxSpeed: 15.0,
     accel: 10.0,
     decel: 10.0,
@@ -121,60 +123,92 @@ const setThrusters = (on: boolean) => {
 };
 
 
-const updateGlider = (camera: FreeCamera, cameraType: string, birdCam: FreeCamera | null, dt: number, dirs: InputState) => {
+const updateGlider = (camera: FreeCamera, cameraType: string, birdCam: FreeCamera | null, dt: number, dirs: InputState, needsUpdate: boolean) => {
     const gm = glider.mesh as Mesh;
 
     if (gm) {
         // Update rotation (yaw, pitch, roll)
 
-        const yawRate = 1.5;
-        const pitchRate = 1.2;
+        if (needsUpdate) {
+            console.log(`Glider input state: yaw=${dirs.yaw.toFixed(2)}, pitch=${dirs.pitch.toFixed(2)}, thrust=${dirs.thrust}`);
+            const yawRate = 1.5;
+            const pitchRate = 1.2;
 
-        // per-frame input angles (small deltas, not absolute values)
-        const yawDelta = dirs.yaw * yawRate * dt;
-        const pitchDelta = dirs.pitch * pitchRate * dt;
-
-
-        // 1. get local axes from current orientation
-        //const right = Vector3.TransformNormal(Vector3.Right(), gm.getWorldMatrix()).normalize();
-        const up = Vector3.TransformNormal(Vector3.Up(), gm.getWorldMatrix()).normalize();
-
-        // 2. build incremental rotations around those LOCAL axes
-        const qYawLocal = Quaternion.RotationAxis(up, yawDelta);
-        //const qPitchLocal = Quaternion.RotationAxis(right, pitchDelta);
-
-        // 3. apply them to current orientation
-        //glider.rotationQuat = qYawLocal.multiply(qPitchLocal).multiply(glider.rotationQuat);
-        glider.rotationQuat = qYawLocal.multiply(glider.rotationQuat);
-        glider.rotationQuat.normalize();
-        gm.rotationQuaternion = glider.rotationQuat;
+            // per-frame input angles (small deltas, not absolute values)
+            const yawDelta = dirs.yaw * yawRate * dt;
+            const pitchDelta = dirs.pitch * pitchRate * dt;
 
 
-        // --- Direction: nose points forward, roll tilts climb ---
-        //const localForward = new Vector3(0, 0, -1);
-        //const forward = Vector3.TransformNormal(localForward, gm.getWorldMatrix()).normalize();
-        //const forward = Vector3.TransformNormal(new Vector3(0, 0, 1), gm.getWorldMatrix()).normalize();
-        // local forward is now -Z because of the 180° flip above
-        //const forwardLocal = new Vector3(0, 0, -1);
-        //const forward = Vector3.TransformNormal(forwardLocal, gm.getWorldMatrix()).normalize();
+            // 1. get local axes from current orientation
+            //const right = Vector3.TransformNormal(Vector3.Right(), gm.getWorldMatrix()).normalize();
+            const up = Vector3.TransformNormal(Vector3.Up(), gm.getWorldMatrix()).normalize();
 
+            // 2. build incremental rotations around those LOCAL axes
+            const qYawLocal = Quaternion.RotationAxis(up, yawDelta);
+            //const qPitchLocal = Quaternion.RotationAxis(right, pitchDelta);
+
+            // 3. apply them to current orientation
+            //glider.rotationQuat = qYawLocal.multiply(qPitchLocal).multiply(glider.rotationQuat);
+            glider.rotationQuat = qYawLocal.multiply(glider.rotationQuat);
+            glider.rotationQuat.normalize();
+            gm.rotationQuaternion = glider.rotationQuat;
+
+
+            // --- Direction: nose points forward, roll tilts climb ---
+            //const localForward = new Vector3(0, 0, -1);
+            //const forward = Vector3.TransformNormal(localForward, gm.getWorldMatrix()).normalize();
+            //const forward = Vector3.TransformNormal(new Vector3(0, 0, 1), gm.getWorldMatrix()).normalize();
+            // local forward is now -Z because of the 180° flip above
+            //const forwardLocal = new Vector3(0, 0, -1);
+            //const forward = Vector3.TransformNormal(forwardLocal, gm.getWorldMatrix()).normalize();
+
+            // change y position by pitchDelta to simulate climb/dive
+            gm.position.y += pitchDelta;
+        }
+
+        // Update speed
+        if (dirs.thrust > 0) glider.speed = Math.min(glider.maxSpeed, glider.speed + glider.accel * dt);
+        else if (dirs.thrust < 0) glider.speed = Math.max(0, glider.speed - glider.decel * dt);
+        //else glider.speed *= 0.99; // drag
+
+        // check if position goes beyond x/z extends + 5%. bounce back if yes
+        const bounds = 5; // 5% boundary
+
+        if (Math.abs(gm.position.x) > glider.extendsX * (1 + bounds / 100)) {
+            gm.position.x = glider.extendsX * (1 + bounds / 100) * Math.sign(gm.position.x);
+            glider.speed = 0; // reset speed on bounce
+            setThrusters(false);
+        }
+        if (Math.abs(gm.position.x) < -glider.extendsX * (1 + bounds / 100)) {
+            gm.position.x = -glider.extendsX * (1 + bounds / 100) * Math.sign(gm.position.x);
+            glider.speed = 0; // reset speed on bounce
+            setThrusters(false);
+        }
+        if (Math.abs(gm.position.z) > glider.extendsZ * (1 + bounds / 100)) {
+            gm.position.z = glider.extendsZ * (1 + bounds / 100) * Math.sign(gm.position.z);
+            glider.speed = 0; // reset speed on bounce
+            setThrusters(false);
+        }
+        if (Math.abs(gm.position.z) < -glider.extendsZ * (1 + bounds / 100)) {
+            gm.position.z = -glider.extendsZ * (1 + bounds / 100) * Math.sign(gm.position.z);
+            glider.speed = 0; // reset speed on bounce
+            setThrusters(false);
+        }
+
+        if (needsUpdate) {
+            setThrusters(glider.speed != 0);
+        }
+        
+
+        // Update position
         const rotationMatrix = new Matrix();
         Matrix.FromQuaternionToRef(glider.rotationQuat, rotationMatrix);
         const forward = Vector3.TransformNormal(
             Vector3.Forward(),
             rotationMatrix
         ).normalize();
-
-        // Update speed
-        if (dirs.thrust > 0) glider.speed = Math.min(glider.maxSpeed, glider.speed + glider.accel * dt);
-        else if (dirs.thrust < 0) glider.speed = Math.max(0, glider.speed - glider.decel * dt);
-        else glider.speed *= 0.99; // drag
-
-        // Update position
         gm.position.addInPlace(forward.scale(glider.speed * dt));
 
-        // change y position by pitchDelta to simulate climb/dive
-        gm.position.y += pitchDelta;
 
 
         // 
@@ -186,23 +220,24 @@ const updateGlider = (camera: FreeCamera, cameraType: string, birdCam: FreeCamer
        
         // ---- Always-visible camera ----
         if (cameraType === 'free') {
+            const maxLerp = 1.0;  // .1;
             // Desired position = behind + above glider in world space
             const rearOffset = new Vector3(0, 2, -4);
             const offsetWorld = Vector3.TransformCoordinates(rearOffset, gm.getWorldMatrix());
 
             // Smooth follow (optional)
-            camera.position = Vector3.Lerp(camera.position, offsetWorld, 0.1);
+            camera.position = Vector3.Lerp(camera.position, offsetWorld, maxLerp);
 
             // Camera always looks slightly ahead of glider (not its back)
             const lookAhead = Vector3.TransformCoordinates(new Vector3(0, 0, 10), gm.getWorldMatrix());
-            camera.setTarget(Vector3.Lerp(camera.getTarget(), lookAhead, 0.2));
+            camera.setTarget(Vector3.Lerp(camera.getTarget(), lookAhead, maxLerp));
 
             // Keep horizon upright: reset upVector each frame
             camera.upVector = Vector3.Up();
         }
         if (birdCam) {
             // --- Bird’s-eye mini-map follows glider position ---
-            birdCam.position.x = gm.position.x;
+            birdCam.position.x = -gm.position.x;
             birdCam.position.z = gm.position.z;
             //birdCam.setTarget(gm.position);
         }

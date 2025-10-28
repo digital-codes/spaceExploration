@@ -2,8 +2,8 @@ import {
     Scene, Engine, HemisphericLight, MeshBuilder,
     Mesh, Vector3, Color3, Color4, StandardMaterial,
     PointLight, AbstractMesh, Viewport,
-    FollowCamera, FreeCamera, Quaternion,
-    ArcRotateCamera, PBRMaterial, FlyCamera,
+    FollowCamera, FreeCamera,
+    ArcRotateCamera, FlyCamera,
     DirectionalLight,
     type Nullable
 } from '@babylonjs/core';
@@ -142,12 +142,13 @@ function onKeyUp(e: KeyboardEvent) {
     if (["KeyW", "KeyS"].includes(e.code)) inputState.thrust = 0;
 }
 
+/*
 let pointerLocked = false;
 function onMouseMove(e: MouseEvent) {
     if (!pointerLocked) return;
     inputState.pitchDelta -= e.movementY * 0.0015;
 }
-
+*/
 
 const buildCanvas = async (canvas: HTMLCanvasElement) => {
     if (!canvas) {
@@ -188,16 +189,24 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
                 glider.thrustersOn = sysParms.thrustersOn || false;
                 setThrusters(glider.thrustersOn);
             }
-            if (inputState !== inputState_) {
+            /*
+            if (inputState.pitch != inputState_.pitch || inputState.yaw != inputState_.yaw ||
+                inputState.roll != inputState_.roll ||
+                inputState.thrust != inputState_.thrust) {
+                */
+            const needsUpdate = (inputState.pitch != 0 || inputState.yaw != 0 ||
+                inputState.roll != 0 ||
+                inputState.thrust != 0)
+            if (needsUpdate) {
                 console.log("Input State Changed:", inputState);
-                updateGlider(camera as FreeCamera, "free", birdCam, dt, inputState);
-                Object.assign(inputState_, inputState);
             }
+            updateGlider(camera as FreeCamera, "free", birdCam, dt, inputState, needsUpdate);
+            Object.assign(inputState_, inputState);
             if (glider.marker) {
                 // negate due to inverse birdcam
                 glider.marker.position.x = -glider.mesh.position.x;
                 glider.marker.position.z = glider.mesh.position.z;
-                glider.marker.position.y = 0.05;  // slightly above ground
+                glider.marker.position.y = 40;  // just below birdcam
             }
         }
 
@@ -223,7 +232,7 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
                 if (callback) {
                     callback("on", idx);
                 }
-                planetGlow(scene, planet.mesh as AbstractMesh, camera);
+                planetGlow(scene, planet.mesh as AbstractMesh);
                 console.log("Showing popup for " + planetSelected);
             }
         } else {
@@ -285,7 +294,8 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
     return canvas;
 }
 
-const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): Promise<{ scene: Scene, camera: FreeCamera | ArcRotateCamera | FlyCamera }> {
+const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): Promise<{ scene: Scene, 
+    camera: FreeCamera | ArcRotateCamera | FlyCamera | FollowCamera, birdCam: FreeCamera }> {
     // Create a basic BJS Scene object
     var scene = new Scene(engine);
     if (!scene) {
@@ -293,7 +303,6 @@ const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): 
     }
     // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
     let camera: ArcRotateCamera | FlyCamera | FreeCamera | FollowCamera;
-
 
     switch (sysParms.camMode) {
         case 'arcRotate':
@@ -367,6 +376,7 @@ const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): 
     birdCam.orthoRight  =  halfSizeX;
     birdCam.orthoTop    =  halfSizeY;
     birdCam.orthoBottom = -halfSizeY;
+    //birdCam.setTarget(Vector3.Zero());
     birdCam.rotation = new Vector3(Math.PI / 2, 0, 0); // look straight down
 
 
@@ -377,7 +387,8 @@ const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): 
     // Set each camera’s viewport
     // (x, y, width, height) are normalized 0–1
     camera.viewport = new Viewport(0, 0, 1.0, 1.0);          // full screen
-    birdCam.viewport  = new Viewport(.80, 0.88, 0.20, 0.12);  // small upper-right corner
+    //birdCam.viewport  = new Viewport(.80, 0.88, 0.20, 0.12);  // small upper-right corner
+    birdCam.viewport  = new Viewport(.70, 0.80, 0.30, 0.20);  // small upper-right corner
 
     // Add both cameras to scene
     scene.activeCameras = [camera, birdCam];
@@ -456,7 +467,7 @@ const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): 
     }
 
     // create a small red disc or sphere
-    const glMarker = MeshBuilder.CreateDisc("marker", { radius: 0.6, tessellation: 16 }, scene);
+    const glMarker = MeshBuilder.CreateDisc("marker", { radius: 2.0, tessellation: 16 }, scene);
     glMarker.rotation.x = Math.PI / 2;            // flat on ground
     const mat = new StandardMaterial("markerMat", scene);
     mat.diffuseColor = new Color3(1, 0, 0);
