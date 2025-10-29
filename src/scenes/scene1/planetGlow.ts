@@ -7,7 +7,7 @@ import {
 } from '@babylonjs/core';
 
 // activate glow ring 
-export default function planetGlow(scene: Scene, planet: AbstractMesh) {
+export default function planetGlow(scene: Scene, planet: AbstractMesh, diameter: number) {
     // create / reuse a single shared glow layer for selections
     let selectionGlow = (scene as any).__selectionGlow as Nullable<GlowLayer> | undefined;
     if (!selectionGlow) {
@@ -25,7 +25,7 @@ export default function planetGlow(scene: Scene, planet: AbstractMesh) {
 
     // compute ring size from the planet diameter (fallback to bounding sphere if missing)
     // const diam = (planet as Mesh).getBoundingInfo().boundingSphere.radius * 2 || 1;
-    const ringDiameter = 1.2 // diam * 1.2;
+    const ringDiameter = diameter * 1.2;
     // const ringThickness = Math.max(diam * 0.06, 0.02);
     const ringThickness = Math.max(0.06, 0.02);
 

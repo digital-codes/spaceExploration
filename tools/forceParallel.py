@@ -11,6 +11,9 @@ import random
 # Pairwise repulsive force (graph-like)
 # ============================================================
 
+DIAM = 1.  # particle diameter
+
+
 @njit(inline='always', fastmath=True)
 def pair_force(rij, r2, k_rep=1.0):
     """
@@ -94,7 +97,7 @@ def compute_forces(pos, rcut, attr_pos, attr_k):
                 forces[i,1] += -ky * (py - ay)
             if kz != 0.0:
                 forces[i,2] += -kz * (pz - az)
-        if py < 1:  # diameter 1
+        if py < DIAM:  # diameter 1
             # ground plane repulsion
             forces[i,1] += 100 * (1 - py)  # push up
 
@@ -144,11 +147,11 @@ if __name__ == "__main__":
     np.random.seed(0)
     A = 9              # attractors per particle. max 6 countries. gravity, buoyancy, cluster (1)
     rcut = 20.0        # cutoff radius for pairwise repulsion  below 20 oscillations occur
-    step_size = [0.005,0.001]   # global movement scaling
-    max_disp = [0.02,0.001]     # per-step max displacement
+    step_size = [0.005,0.002]   # global movement scaling
+    max_disp = [0.02,0.002]     # per-step max displacement
     max_steps = 100000   # iteration limit
     report_every = 100 # log frequency
-    force_threshold = 10 # 1e-2  # stop if total residual force < this
+    force_threshold = 5 # 5 worked # 1e-2  # stop if total residual force < this
 
     df = pd.read_json("mcMatch_full.json")# [:500]
     N = len(df.index)
@@ -171,7 +174,8 @@ if __name__ == "__main__":
             attr_k[i,a] = np.array([5.0, 0.0, 5.0], dtype=float) # pull on x and z only
         # unused attractors are set to 0 by default
         # gravity attractor (pull down on y)
-        attr_k[i,A-3] = np.array([0.0, 5.0, 0.0], dtype=float)  # y only
+        attr_k[i,A-3] = np.array([0.0, 0.0, 0.0], dtype=float)  # y only
+        # attr_k[i,A-3] = np.array([0.0, 5.0, 0.0], dtype=float)  # y only
         attr_pos[i,A-3] = np.array([0.0, 0.0, 0.0], dtype=float)  # ground level
         # age attractor (pull up on y) / buoyance
         attr_k[i,A-2] = np.array([0.0, 5.0, 0.0], dtype=float)  # y only
@@ -288,10 +292,13 @@ if __name__ == "__main__":
             "xpos": float(best_pos[i][0]),
             "ypos": float(best_pos[i][1]),
             "zpos": float(best_pos[i][2]),
+            "attX": float(attr_pos[i][0][0]),
+            "attY": float(attr_pos[i][0][1]),
+            "attZ": float(attr_pos[i][0][2]),
             "parm_a": float(attr_k[i][A-3][1]),
             "parm_b": float(attr_pos[i][A-2][1]),
             "parm_c": float(attr_k[i][-1][0]),
-            "diameter": 1.0,
+            "diameter": DIAM,
             "rotation": {
                 "speed": random.uniform(0, .1),
                 "angle": random.uniform(0,6.2),
@@ -302,9 +309,21 @@ if __name__ == "__main__":
                 "speed": random.uniform(0, .01),
                 "angle": .1,
                 "active": True
-            }
+            },
+            "residual_force": [forces[i][0].item(), forces[i][1].item(), forces[i][2].item()]
         }
         objects_json.append(obj_entry)
+
+    # Print top 10 objects by residual force magnitude (index, total, fx, fy, fz)
+    mags = np.linalg.norm(forces, axis=1)
+    order = np.argsort(mags)[::-1]
+    ntop = min(10, len(mags))
+    print(f"\nTop {ntop} objects by residual force (index, total, fx, fy, fz):")
+    for rank in range(ntop):
+        i = int(order[rank])
+        fx, fy, fz = forces[i]
+        total = mags[i]
+        print(f"{rank+1:2d}. idx={i} | total={total:.6e} | fx={fx:.6e}, fy={fy:.6e}, fz={fz:.6e}")
 
     # Write to file
     with open("objects.json", "w") as f:

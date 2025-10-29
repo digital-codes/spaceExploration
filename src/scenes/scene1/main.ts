@@ -189,11 +189,6 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
                 glider.thrustersOn = sysParms.thrustersOn || false;
                 setThrusters(glider.thrustersOn);
             }
-            /*
-            if (inputState.pitch != inputState_.pitch || inputState.yaw != inputState_.yaw ||
-                inputState.roll != inputState_.roll ||
-                inputState.thrust != inputState_.thrust) {
-                */
             const needsUpdate = (inputState.pitch != 0 || inputState.yaw != 0 ||
                 inputState.roll != 0 ||
                 inputState.thrust != 0)
@@ -213,10 +208,14 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
 
         // --- Object selection logic ---
         const { name: closestName } = raySelect(scene, camera, camera.getTarget(), SHOW_DISTANCE, undefined);
-        //console.log("Ray Select:", "Closest:", closestName);
         if (closestName) {
+            console.log("Ray Select:", "Closest:", closestName);
+            console.log("Planet Selected:", planetSelected);
+            console.log("Cam Position", camera.position);
+            console.log("Cam Target", camera.getTarget());
+            console.log("Planet Position:", system.find(p => p.name === closestName)?.mesh?.position);
             // extract trailing number from names like "obj123" -> 123
-            const idx = parseInt(closestName.substring(3)) || undefined;
+            const idx = (parseInt(closestName.substring(3)) - 1) || undefined;
             if (idx === undefined) {
                 console.warn("Invalid object name:", closestName);
                 return;
@@ -232,7 +231,7 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
                 if (callback) {
                     callback("on", idx);
                 }
-                planetGlow(scene, planet.mesh as AbstractMesh);
+                planetGlow(scene, planet.mesh as AbstractMesh, planet.diameter);
                 console.log("Showing popup for " + planetSelected);
             }
         } else {
