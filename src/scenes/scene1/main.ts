@@ -231,7 +231,7 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
                 if (callback) {
                     callback("on", idx);
                 }
-                planetGlow(scene, planet.mesh as AbstractMesh, planet.diameter);
+                planetGlow(scene, planet.mesh as AbstractMesh, planet.diameter || 1);
                 console.log("Showing popup for " + planetSelected);
             }
         } else {
