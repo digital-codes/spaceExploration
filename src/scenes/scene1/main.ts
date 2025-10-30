@@ -205,6 +205,22 @@ const buildCanvas = async (canvas: HTMLCanvasElement) => {
             }
         }
 
+        // individual rotations for each Planet 
+        for (let idx = 0; idx < system.length; idx++) {
+            const planet = system[idx];
+            if (!planet) continue;
+            // console.log(planet.name);
+            if (!planet.mesh) {
+                // skip planets that haven't been created yet
+                console.log('Skipping ' + planet.name + ' - no mesh yet.');
+                continue;
+            }
+            if (planet.rotation.active) {
+                if (planetSelected !== planet.idx) {
+                    (planet.mesh as Mesh).rotate(new Vector3(0, 1, 0), planet.rotation.speed);
+                }
+            }
+        }
 
         // --- Object selection logic ---
         const { name: closestName } = raySelect(scene, camera, camera.getTarget(), SHOW_DISTANCE, undefined);
