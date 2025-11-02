@@ -276,12 +276,19 @@ const toggleThrusters = () => {
   color: transparent;
 }
 
+@media (max-width: 1281px) {
+.title {
+  padding: 0.25em;
+  border-radius: 6px;
+  }
+}
 
-@media (max-width: 600px) {
+
+@media (max-width: 601px) {
 
   .title {
     font-size: 1.1rem;
-    padding: 0.35rem;
+    padding: 0.2rem;
   }
 
   .info {
