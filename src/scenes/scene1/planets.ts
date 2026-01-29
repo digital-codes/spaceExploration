@@ -28,7 +28,7 @@ export default function createPlanet(planetData: any, scene: Scene) {
     // --- Create a poster (double-sided plane inside) ---
     // get diameter from planet
     const diameter = planetData.diameter;
-    console.log('Creating poster for ' + planetData.name + ' with diameter ' + diameter);
+    //console.log('Creating poster for ' + planetData.name + ' with diameter ' + diameter);
     const poster = MeshBuilder.CreatePlane("poster", { width: diameter * .7, height: diameter * .7, sideOrientation: Mesh.DOUBLESIDE }, scene);
     poster.parent = planetData.mesh;
 

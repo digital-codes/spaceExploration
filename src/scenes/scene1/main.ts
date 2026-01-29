@@ -5,8 +5,24 @@ import {
     FollowCamera, FreeCamera,
     ArcRotateCamera, FlyCamera,
     DirectionalLight,
-    type Nullable
+    type Nullable,
 } from '@babylonjs/core';
+
+// Device detection for mobile/touch support
+
+const isMobileDevice = Tools.IsWindowObjectExist() && (
+    /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+    ('ontouchstart' in window) ||
+    (navigator.maxTouchPoints > 0)
+);
+
+const hasTouch = Tools.IsWindowObjectExist() && (
+    ('ontouchstart' in window) ||
+    (navigator.maxTouchPoints > 0) ||
+    (('msMaxTouchPoints' in navigator) && (navigator as any).msMaxTouchPoints > 0)
+);
+
+console.log(`Device type: ${isMobileDevice ? 'Mobile' : 'Desktop'}, Touch support: ${hasTouch}`);
 
 // scene construction imports
 import createGround from './ground';
@@ -60,6 +76,7 @@ const inputState_: InputState = { ...inputState };
 // import raw JSON and assert the typed shape
 import rawSystem from '@/assets/data/objects.json';
 import planetGlow from './planetGlow';
+import { Tools } from '@babylonjs/core';
 const system: PlanetObject[] = (rawSystem as unknown) as PlanetObject[];
 console.log(system);
 
@@ -140,6 +157,112 @@ function onKeyUp(e: KeyboardEvent) {
     if (["KeyQ", "KeyE"].includes(e.code)) inputState.yaw = 0;
     if (["KeyA", "KeyD"].includes(e.code)) inputState.pitch = 0;
     if (["KeyW", "KeyS"].includes(e.code)) inputState.thrust = 0;
+}
+
+// Touch controls (single-finger thrust/yaw, two-finger pitch) - with sensitivity scaling for smoother control
+if (hasTouch) {
+    let singleStartX = 0;
+    let singleStartY = 0;
+    let doubleStartY = 0;
+    let trackingSingle = false;
+    let trackingDouble = false;
+    const MOVE_THRESHOLD = 10; // pixels
+    const TOUCH_SENSITIVITY = 0.35; // <1 = less sensitive (smoother). adjust 0.1..1.0
+    const clamp = (v: number, a = -1, b = 1) => Math.max(a, Math.min(b, v));
+
+    function onTouchStart(e: TouchEvent) {
+        if (!e.touches) return;
+        if (e.touches.length === 1) {
+            const t = e.touches.item(0);
+            if (!t) return;
+            singleStartX = t.clientX;
+            singleStartY = t.clientY;
+            trackingSingle = true;
+            trackingDouble = false;
+            // reset other axes
+            inputState.pitch = 0;
+        } else if (e.touches.length === 2) {
+            const t0 = e.touches.item(0);
+            const t1 = e.touches.item(1);
+            if (!t0 || !t1) return;
+            doubleStartY = (t0.clientY + t1.clientY) / 2;
+            trackingDouble = true;
+            trackingSingle = false;
+            // reset single finger axes
+            inputState.thrust = 0;
+            inputState.yaw = 0;
+        }
+    }
+
+    function onTouchMove(e: TouchEvent) {
+        if (!e.touches) return;
+        e.preventDefault();
+        if (trackingSingle && e.touches.length === 1) {
+            const t = e.touches.item(0);
+            if (!t) return;
+            const dx = t.clientX - singleStartX;
+            const dy = t.clientY - singleStartY;
+            const sdx = dx * TOUCH_SENSITIVITY;
+            const sdy = dy * TOUCH_SENSITIVITY;
+
+            if (Math.abs(dx) > Math.abs(dy)) {
+                // horizontal -> yaw (left => +, right => -)
+                if (Math.abs(sdx) > MOVE_THRESHOLD) {
+                    // proportional, capped to [-1,1], invert sign so left (neg dx) -> + yaw
+                    inputState.yaw = clamp(-sdx / (MOVE_THRESHOLD * 10));
+                } else {
+                    inputState.yaw = 0;
+                }
+                inputState.thrust = 0;
+            } else {
+                // vertical -> thrust (up => +, down => -)
+                if (Math.abs(sdy) > MOVE_THRESHOLD) {
+                    inputState.thrust = clamp(-sdy / MOVE_THRESHOLD);
+                } else {
+                    inputState.thrust = 0;
+                }
+                inputState.yaw = 0;
+            }
+        } else if (trackingDouble && e.touches.length === 2) {
+            const t0 = e.touches.item(0);
+            const t1 = e.touches.item(1);
+            if (!t0 || !t1) return;
+            const avgY = (t0.clientY + t1.clientY) / 2;
+            const dy = avgY - doubleStartY;
+            const sdy = dy * TOUCH_SENSITIVITY;
+            if (Math.abs(sdy) > MOVE_THRESHOLD) {
+                // up => +pitch
+                inputState.pitch = clamp(-sdy / MOVE_THRESHOLD);
+            } else {
+                inputState.pitch = 0;
+            }
+        }
+    }
+
+    function onTouchEnd(e: TouchEvent) {
+        // if no touches remain, reset controls
+        if (!e.touches || e.touches.length === 0) {
+            trackingSingle = false;
+            trackingDouble = false;
+            inputState.thrust = 0;
+            inputState.yaw = 0;
+            inputState.pitch = 0;
+        } else if (e.touches.length === 1) {
+            // switch to single-finger tracking using remaining touch
+            const t = e.touches.item(0);
+            if (!t) return;
+            singleStartX = t.clientX;
+            singleStartY = t.clientY;
+            trackingSingle = true;
+            trackingDouble = false;
+            inputState.pitch = 0;
+        }
+    }
+
+    window.addEventListener('touchstart', onTouchStart, { passive: false });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('touchend', onTouchEnd, { passive: false });
+    window.addEventListener('touchcancel', onTouchEnd, { passive: false });
 }
 
 /*
@@ -319,6 +442,7 @@ const createScene = async function (engine: Engine, canvas: HTMLCanvasElement): 
     // Create a FreeCamera, and set its position to {x: 0, y: 5, z: -10}
     let camera: ArcRotateCamera | FlyCamera | FreeCamera | FollowCamera;
 
+    console.log("Camera mode:", sysParms.camMode);
     switch (sysParms.camMode) {
         case 'arcRotate':
             camera = new ArcRotateCamera("ArcRotateCamera", Math.PI / 2, Math.PI / 4, sysParms.cameraDistance || 20, Vector3.Zero(), scene);
